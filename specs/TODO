@@ -1,0 +1,11 @@
+Milestones:
+  ✔ Get frontend and backend running locally @done(26-06-23 15:06)
+  ✔ Get frontend and backend to communicate with a simple Hello World response @done(26-06-25 14:53)
+  ✔ Create database table and check if an entry can be manually created @done(26-06-25 15:03)
+  ✔ EF Core and PostgreSQL integrated in backend @done(26-06-25 14:53)
+  ☐ I can login
+  ☐ I can log a session
+  ☐ I can view a session
+  ☐ I can edit a session
+  ☐ I can delete a session
+  ☐ I can see a streak
