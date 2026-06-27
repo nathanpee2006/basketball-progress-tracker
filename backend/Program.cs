@@ -1,8 +1,22 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Backend.Data;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["Clerk:Authority"];
+        options.TokenValidationParameters = new()
+        {
+            ValidateAudience = false
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddOpenApi();
 
@@ -16,8 +30,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -30,8 +42,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("ReactDevPolicy");
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.MapGet("/", () => new { message = "Hello World" });
+app.MapGet("/api/health", () => Results.Ok("ok"));
+app.MapGet("/api/me", (ClaimsPrincipal user) =>
+{
+    var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    return Results.Ok(new { userId });
+}).RequireAuthorization();
 
 app.Run();

@@ -1,43 +1,49 @@
 import { useState, useEffect } from "react";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
+import { useAuth, SignInButton, SignUpButton, UserButton } from "@clerk/react";
 import "./App.css";
 
 function App() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   console.log(data);
+  const { isSignedIn, getToken } = useAuth();
 
   useEffect(() => {
-    const apiEndpoint = "http://localhost:5134/";
+    if (!isSignedIn) return;
 
-    fetch(apiEndpoint)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+    const fetchMe = async () => {
+      const token = await getToken();  
+
+      const apiBaseUrl = "http://localhost:5134/api";
+      const response = await fetch(`${apiBaseUrl}/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`  
         }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((error) => console.error(error));
-  }, []);
+      });
 
-  return (
+      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+      const result = await response.json();
+      setData(result);
+    };
+
+    fetchMe().catch(console.error);
+  }, [isSignedIn]);  
+         
+    return (
     <>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem" }}>
         <h1>Basketball Progress Tracker</h1>
-        <Show when="signed-out">
+        {!isSignedIn ? (
           <div style={{ display: "flex", gap: "0.5rem" }}>
             <SignInButton />
             <SignUpButton />
           </div>
-        </Show>
-        <Show when="signed-in">
+        ) : (
           <UserButton />
-        </Show>
+        )}
       </header>
+      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
     </>
-  );
+  ); 
 }
 
 export default App;
