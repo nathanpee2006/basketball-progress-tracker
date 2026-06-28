@@ -11,7 +11,7 @@ function App() {
     if (!isSignedIn) return;
 
     const fetchMe = async () => {
-      const token = await getToken();  
+      const token = await getToken({ template: "jwt-basketball-progress-tracker" });  
 
       const apiBaseUrl = "http://localhost:5134/api";
       const response = await fetch(`${apiBaseUrl}/me`, {

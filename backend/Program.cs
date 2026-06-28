@@ -12,7 +12,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.Authority = builder.Configuration["Clerk:Authority"];
         options.TokenValidationParameters = new()
         {
-            ValidateAudience = false
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ValidIssuer = builder.Configuration["Clerk:Issuer"],
+            ValidAudience = builder.Configuration["Clerk:Audience"]
         };
     });
 
