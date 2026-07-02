@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Backend.Data;
 using System.Security.Claims;
+using backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,13 +31,16 @@ builder.Services.AddCors(options =>
     options.AddPolicy("ReactDevPolicy", policy =>
     {
         policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 
 var app = builder.Build();
 
@@ -51,13 +55,19 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => new { message = "Hello World" });
-app.MapGet("/api/health", () => Results.Ok("ok"));
-app.MapGet("/api/me", (ClaimsPrincipal user) =>
+app.MapGet("/api/sessions", async (HttpContext ctx, IPlayerService playerService, ISessionService sessionService) =>
 {
-    var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var clerkUserId = ctx.User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (string.IsNullOrWhiteSpace(clerkUserId))
+    {
+        return Results.Unauthorized();
+    }
 
-    return Results.Ok(new { userId });
+    var timeZoneHeader = ctx.Request.Headers["X-Time-Zone"].FirstOrDefault();
+    var player = await playerService.GetOrCreateAsync(clerkUserId, timeZoneHeader);
+    var sessions = await sessionService.ListByPlayerAsync(player.Id);
+
+    return Results.Ok(sessions);
 }).RequireAuthorization();
 
 app.Run();

@@ -10,13 +10,16 @@ function App() {
   useEffect(() => {
     if (!isSignedIn) return;
 
-    const fetchMe = async () => {
+    const fetchSessions = async () => {
       const token = await getToken({ template: "jwt-basketball-progress-tracker" });  
 
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      
       const apiBaseUrl = "http://localhost:5134/api";
-      const response = await fetch(`${apiBaseUrl}/me`, {
+      const response = await fetch(`${apiBaseUrl}/sessions`, {
         headers: {
-          Authorization: `Bearer ${token}`  
+          Authorization: `Bearer ${token}`,
+          "X-Time-Zone": timeZone
         }
       });
 
@@ -25,7 +28,7 @@ function App() {
       setData(result);
     };
 
-    fetchMe().catch(console.error);
+    fetchSessions().catch(console.error);
   }, [isSignedIn]);  
          
     return (
