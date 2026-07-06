@@ -4,10 +4,18 @@ import './index.css'
 import App from './App.tsx'
 import { ClerkProvider } from '@clerk/react'
 
+const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+if (!publishableKey) {
+  throw new Error(
+    'Missing VITE_CLERK_PUBLISHABLE_KEY — set it in .env file before starting the app'
+  )
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ClerkProvider
-      publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
+      publishableKey={publishableKey}
       afterSignOutUrl="/"
     >
       <App />
