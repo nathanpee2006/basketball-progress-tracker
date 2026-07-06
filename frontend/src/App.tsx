@@ -4,7 +4,6 @@ import "./App.css";
 
 function App() {
   const [data, setData] = useState(null);
-  console.log(data);
   const { isSignedIn, getToken } = useAuth();
 
   useEffect(() => {
@@ -13,13 +12,17 @@ function App() {
     const fetchSessions = async () => {
       const token = await getToken({ template: "jwt-basketball-progress-tracker" });  
 
+      if (!token) {
+        throw new Error("No auth token available — user may not be signed in")
+      } 
+
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       
       const apiBaseUrl = "http://localhost:5134/api";
       const response = await fetch(`${apiBaseUrl}/sessions`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "X-Time-Zone": timeZone
+          "Time-Zone": timeZone
         }
       });
 

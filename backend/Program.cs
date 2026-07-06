@@ -63,7 +63,7 @@ app.MapGet("/api/sessions", async (HttpContext ctx, IPlayerService playerService
         return Results.Unauthorized();
     }
 
-    var timeZoneHeader = ctx.Request.Headers["X-Time-Zone"].FirstOrDefault();
+    var timeZoneHeader = ctx.Request.Headers["Time-Zone"].FirstOrDefault();
     var player = await playerService.GetOrCreateAsync(clerkUserId, timeZoneHeader);
     var sessions = await sessionService.ListByPlayerAsync(player.Id);
 
