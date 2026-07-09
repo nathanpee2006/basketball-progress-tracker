@@ -1,9 +1,10 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Backend.Data;
-using System.Security.Claims;
-using backend.Services;
+using Backend.Common.Endpoints;
+using Backend.Common.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,8 +40,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddEndpoints();
+
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
 builder.Services.AddScoped<IPlayerService, PlayerService>();
-builder.Services.AddScoped<ISessionService, SessionService>();
 
 var app = builder.Build();
 
@@ -50,24 +54,12 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseHttpsRedirection();
+
 app.UseCors("ReactDevPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHttpsRedirection();
 
-app.MapGet("/api/sessions", async (HttpContext ctx, IPlayerService playerService, ISessionService sessionService) =>
-{
-    var clerkUserId = ctx.User.FindFirstValue(ClaimTypes.NameIdentifier);
-    if (string.IsNullOrWhiteSpace(clerkUserId))
-    {
-        return Results.Unauthorized();
-    }
-
-    var timeZoneHeader = ctx.Request.Headers["Time-Zone"].FirstOrDefault();
-    var player = await playerService.GetOrCreateAsync(clerkUserId, timeZoneHeader);
-    var sessions = await sessionService.ListByPlayerAsync(player.Id);
-
-    return Results.Ok(sessions);
-}).RequireAuthorization();
+app.MapEndpoints();
 
 app.Run();
