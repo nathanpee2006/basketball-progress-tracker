@@ -1,6 +1,6 @@
 ﻿using Backend.Models;
 
-namespace backend.Services;
+namespace Backend.Common.Services;
 
 public interface IPlayerService
 {

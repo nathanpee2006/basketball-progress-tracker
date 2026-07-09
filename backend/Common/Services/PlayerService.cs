@@ -2,7 +2,7 @@
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Services;
+namespace Backend.Common.Services;
 
 public class PlayerService : IPlayerService
 {

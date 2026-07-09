@@ -1,10 +1,10 @@
-﻿using Backend.Data;
+﻿using Backend.Common.Services;
+using Backend.Data;
 using Backend.Models;
-using backend.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Tests.Services;
+namespace Backend.Tests.Services;
 
 public class PlayerServiceTests : IDisposable
 {
