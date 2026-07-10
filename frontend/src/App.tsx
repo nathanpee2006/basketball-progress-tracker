@@ -5,7 +5,7 @@ import { AnalyticsPage } from "@/pages/AnalyticsPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { SessionDetailPage } from "@/pages/SessionDetailPage";
 import { SessionFormPage } from "@/pages/SessionFormPage";
-import { SessionsListPage } from "@/pages/SessionsListPage";
+import { SessionsPage } from "@/pages/SessionsPage";
 
 function UnauthenticatedScreen() {
   return (
@@ -39,7 +39,7 @@ function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<DashboardPage />} />
-        <Route path="sessions" element={<SessionsListPage />} />
+        <Route path="sessions" element={<SessionsPage />} />
         <Route path="sessions/new" element={<SessionFormPage mode="create" />} />
         <Route path="sessions/:id" element={<SessionDetailPage />} />
         <Route path="sessions/:id/edit" element={<SessionFormPage mode="edit" />} />
