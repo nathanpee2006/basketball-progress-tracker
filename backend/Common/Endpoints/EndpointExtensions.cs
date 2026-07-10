@@ -2,7 +2,6 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Backend.Common.Endpoints;
-
 public static class EndpointExtensions
 {
     public static IServiceCollection AddEndpoints(this IServiceCollection services)
