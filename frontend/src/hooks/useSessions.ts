@@ -8,6 +8,7 @@ type Session = {
   midrangeShotPercentage: number;
   threePointShotPercentage: number;
   freeThrowShotPercentage: number;
+  overallShotPercentage: number;
 };
 
 type FetchError = Error & {

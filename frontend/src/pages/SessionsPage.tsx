@@ -76,7 +76,7 @@ export function SessionsPage() {
                 {new Date(session.date).toLocaleDateString()}
               </CardTitle>
               <CardDescription>
-                {`Paint ${session.paintShotPercentage}% · Mid ${session.midrangeShotPercentage}% · 3PT ${session.threePointShotPercentage}% · FT ${session.freeThrowShotPercentage}%`}
+                {`Paint ${session.paintShotPercentage}% · Mid ${session.midrangeShotPercentage}% · 3PT ${session.threePointShotPercentage}% · FT ${session.freeThrowShotPercentage}% . Overall ${session.overallShotPercentage}%`}
               </CardDescription>
               <CardAction>
                 <DropdownMenu>
