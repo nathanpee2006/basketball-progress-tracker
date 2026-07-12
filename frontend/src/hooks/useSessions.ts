@@ -1,15 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@clerk/react";
-
-type Session = {
-  id: string;
-  date: string;
-  paintShotPercentage: number;
-  midrangeShotPercentage: number;
-  threePointShotPercentage: number;
-  freeThrowShotPercentage: number;
-  overallShotPercentage: number;
-};
+import type { Session } from "types/session";
 
 type FetchError = Error & {
   status: number;
