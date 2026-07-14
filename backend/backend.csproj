@@ -20,6 +20,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.16.5" />
+    <PackageReference Include="Svix" Version="1.96.1" />
   </ItemGroup>
 
   <ItemGroup>
