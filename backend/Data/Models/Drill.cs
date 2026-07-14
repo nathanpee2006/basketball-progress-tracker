@@ -1,13 +1,14 @@
-﻿namespace Backend.Models;
-
-public class Drill
+﻿namespace Backend.Data.Models
 {
-    public int Id { get; set; }
-    public int SessionId { get; set; }
-    public Session Session { get; set; } = null!;
+    public class Drill
+    {
+        public int Id { get; set; }
+        public int SessionId { get; set; }
+        public Session Session { get; set; } = null!;
 
-    public string Name { get; set; } = string.Empty; 
-    public int CompletionTimeInSeconds { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int CompletionTimeInSeconds { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
 }

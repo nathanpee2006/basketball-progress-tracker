@@ -1,4 +1,4 @@
-namespace Backend.Models
+namespace Backend.Data.Models
 {
     public class Session
     {

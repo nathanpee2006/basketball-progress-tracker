@@ -8,6 +8,10 @@ import { SessionFormPage } from "@/pages/SessionFormPage";
 import { SessionsPage } from "@/pages/SessionsPage";
 
 function UnauthenticatedScreen() {
+  const unsafeMetadata : SignUpUnsafeMetadata = {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
@@ -17,7 +21,7 @@ function UnauthenticatedScreen() {
         </p>
         <div className="mt-6 flex items-center justify-center gap-3">
           <SignInButton />
-          <SignUpButton />
+          <SignUpButton mode="modal" unsafeMetadata={unsafeMetadata} />
         </div>
       </div>
     </main>
