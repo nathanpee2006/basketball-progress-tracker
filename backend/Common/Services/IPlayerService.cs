@@ -1,4 +1,4 @@
-﻿using Backend.Models;
+﻿using Backend.Data.Models;
 
 namespace Backend.Common.Services;
 
