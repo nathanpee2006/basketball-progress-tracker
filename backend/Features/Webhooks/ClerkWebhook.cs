@@ -35,7 +35,7 @@ public static class ClerkWebhook
         if (string.IsNullOrEmpty(rawBody))
             return Results.BadRequest();
 
-        var signingSecret = configuration["Clerk:WebhookSigningSecret"];
+        var signingSecret = configuration["Clerk:WebhookSigningSecret"] ?? throw new InvalidOperationException("Clerk webhook signing secret is not configured.");;
         try
         {
             var webhook = new Webhook(signingSecret);
