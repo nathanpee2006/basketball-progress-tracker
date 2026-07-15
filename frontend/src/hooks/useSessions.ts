@@ -27,35 +27,45 @@ export function useSessions(): {
     setIsLoading(true);
     setError(null);
 
-    const token = await getToken({
-      template: "jwt-basketball-progress-tracker",
-    });
-    if (!token) {
-      throw new Error("No auth token available — user may not be signed in");
-    }
-
     try {
-      const response = await fetch(`${SESSIONS_URL}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        signal: controller.signal,
+      const token = await getToken({
+        template: "jwt-basketball-progress-tracker",
       });
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw Object.assign(new Error(errData.message || response.statusText), {
-          status: response.status,
+
+      try {
+        const response = await fetch(`${SESSIONS_URL}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal: controller.signal,
         });
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw Object.assign(
+            new Error(errData.message || response.statusText),
+            {
+              status: response.status,
+            },
+          );
+        }
+        const result = await response.json();
+        setSessions(result as Session[]);
+      } catch (err: unknown) {
+        const error = err as FetchError;
+        if (error.name !== "AbortError") {
+          setError({
+            message: error.message,
+            status: error.status,
+          } as FetchError);
+        }
+      } finally {
+        setIsLoading(false);
       }
-      const result = await response.json();
-      setSessions(result as Session[]);
-    } catch (err: unknown) {
-      const error = err as FetchError;
-      if (error.name !== "AbortError") {
-        setError({ message: error.message, status: error.status } as FetchError);
-      }
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      setError({
+        message: "Failed to get auth token",
+        status: 401,
+      } as FetchError);
     }
   }, [SESSIONS_URL]);
 
