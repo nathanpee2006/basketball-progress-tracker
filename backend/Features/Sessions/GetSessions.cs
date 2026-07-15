@@ -22,7 +22,11 @@ public static class GetSessions
    {
       public void MapEndpoint(IEndpointRouteBuilder app)
       {
-         app.MapGet("sessions", Handler).WithTags("Sessions").Produces<Response>().RequireAuthorization();
+         app.MapGet("sessions", Handler)
+            .WithTags("Sessions").Produces<List<Response>>()
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization();
       }
    }
 
@@ -34,7 +38,7 @@ public static class GetSessions
          return TypedResults.Unauthorized();
       }
 
-      var player = await playerService.GetByClerkUserIdAsync(clerkUserId); 
+      var player = await playerService.GetByClerkUserIdAsync(clerkUserId);
       if (player is null)
       {
          return TypedResults.NotFound();
@@ -59,6 +63,6 @@ public static class GetSessions
                ))
                .ToListAsync(cancellationToken);
 
-         return TypedResults.Ok(sessions);
+      return TypedResults.Ok(sessions);
    }
 }
