@@ -131,4 +131,62 @@ public class GetSessionsTests(ApiFixture api) : IClassFixture<ApiFixture>, IAsyn
         jan10.FreeThrowShotPercentage.Should().Be(80);
         jan10.OverallShotPercentage.Should().Be(45); // 18/40
     }
+
+    [Fact]
+    public async Task Returns_only_the_authenticated_players_sessions()
+    {
+        const string clerkUserId = "clerk_user_3";
+        const string otherClerkUserId = "clerk_user_4";
+
+        using var scope = api.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var player = new Player { ClerkUserId = clerkUserId };
+        var otherPlayer = new Player { ClerkUserId = otherClerkUserId };
+        db.Players.AddRange(player, otherPlayer);
+        await db.SaveChangesAsync();
+
+        db.Sessions.AddRange(
+            new Session
+            {
+                PlayerId = player.Id,
+                Date = new DateOnly(2026, 1, 10),
+                CreatedAt = new DateTime(2026, 1, 10, 9, 0, 0, DateTimeKind.Utc),
+                PaintMakes = 5,
+                PaintAttempts = 10,
+                MidrangeMakes = 5,
+                MidrangeAttempts = 10,
+                ThreePointMakes = 5,
+                ThreePointAttempts = 10,
+                FreeThrowMakes = 5,
+                FreeThrowAttempts = 10
+            },
+            new Session
+            {
+                PlayerId = otherPlayer.Id,
+                Date = new DateOnly(2026, 1, 15), // more recent than the authenticated player's session
+                CreatedAt = new DateTime(2026, 1, 15, 9, 0, 0, DateTimeKind.Utc),
+                PaintMakes = 10,
+                PaintAttempts = 10,
+                MidrangeMakes = 10,
+                MidrangeAttempts = 10,
+                ThreePointMakes = 10,
+                ThreePointAttempts = 10,
+                FreeThrowMakes = 10,
+                FreeThrowAttempts = 10
+            }
+        );
+        await db.SaveChangesAsync();
+
+        var client = api.CreateClient().AuthenticateAs(clerkUserId);
+
+        var response = await client.GetAsync("/api/sessions");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var sessions = await response.Content.ReadFromJsonAsync<List<GetSessions.Response>>();
+
+        sessions.Should().ContainSingle();
+        sessions![0].Date.Should().Be(new DateOnly(2026, 1, 10));
+        sessions[0].OverallShotPercentage.Should().Be(50);
+    }
 }
