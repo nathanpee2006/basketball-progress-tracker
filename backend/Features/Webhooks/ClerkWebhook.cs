@@ -35,14 +35,13 @@ public static class ClerkWebhook
         if (string.IsNullOrEmpty(rawBody))
             return Results.BadRequest();
 
-        var signingSecret = configuration["Clerk:WebhookSigningSecret"]
-                            ?? throw new InvalidOperationException("Clerk webhook signing secret is not configured.");
-        var webhook = new Webhook(signingSecret);
+        var signingSecret = configuration["Clerk:WebhookSigningSecret"];
         try
         {
+            var webhook = new Webhook(signingSecret);
             webhook.Verify(
                 rawBody.AsSpan(),
-                headerName => httpContext.Request.Headers.TryGetValue(headerName, out var value)
+                headerName => headerName is not null && httpContext.Request.Headers.TryGetValue(headerName, out var value)
                     ? value.ToString()
                     : null);
         }
