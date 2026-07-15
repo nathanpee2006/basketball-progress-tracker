@@ -16,7 +16,7 @@ public class ApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseSetting("ConnectionStrings:Database", _db.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:DefaultConnection", _db.GetConnectionString()); 
 
         builder.ConfigureTestServices(services =>
         {
