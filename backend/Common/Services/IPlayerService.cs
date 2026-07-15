@@ -4,5 +4,5 @@ namespace Backend.Common.Services;
 
 public interface IPlayerService
 {
-    Task<Player> GetOrCreateAsync(string clerkUserId, string? timeZoneId);
+    Task<Player?> GetByClerkUserIdAsync(string clerkUserId);
 }

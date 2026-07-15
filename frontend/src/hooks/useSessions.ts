@@ -34,13 +34,10 @@ export function useSessions(): {
       throw new Error("No auth token available — user may not be signed in");
     }
 
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
     try {
       const response = await fetch(`${SESSIONS_URL}`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Time-Zone": timeZone,
         },
         signal: controller.signal,
       });

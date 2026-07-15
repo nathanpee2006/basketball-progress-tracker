@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Backend.Common.Endpoints;
 using Backend.Common.Services;
 using Backend.Data;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Features.Sessions;
@@ -27,7 +26,7 @@ public static class GetSessions
       }
    }
 
-   public static async Task<IResult> Handler(AppDbContext context, IPlayerService playerService, ClaimsPrincipal user, [FromHeader(Name = "Time-Zone")] string? timeZoneId, CancellationToken cancellationToken)
+   public static async Task<IResult> Handler(AppDbContext context, IPlayerService playerService, ClaimsPrincipal user, CancellationToken cancellationToken)
    {
       var clerkUserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
       if (clerkUserId is null)
@@ -35,7 +34,11 @@ public static class GetSessions
          return TypedResults.Unauthorized();
       }
 
-      var player = await playerService.GetOrCreateAsync(clerkUserId, timeZoneId);
+      var player = await playerService.GetByClerkUserIdAsync(clerkUserId); 
+      if (player is null)
+      {
+         return TypedResults.NotFound();
+      }
 
       var sessions = await context.Sessions
                .AsNoTracking()
