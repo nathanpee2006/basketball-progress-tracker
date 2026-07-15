@@ -5,9 +5,13 @@ import { AnalyticsPage } from "@/pages/AnalyticsPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { SessionDetailPage } from "@/pages/SessionDetailPage";
 import { SessionFormPage } from "@/pages/SessionFormPage";
-import { SessionsListPage } from "@/pages/SessionsListPage";
+import { SessionsPage } from "@/pages/SessionsPage";
 
 function UnauthenticatedScreen() {
+  const unsafeMetadata : SignUpUnsafeMetadata = {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
@@ -17,7 +21,7 @@ function UnauthenticatedScreen() {
         </p>
         <div className="mt-6 flex items-center justify-center gap-3">
           <SignInButton />
-          <SignUpButton />
+          <SignUpButton mode="modal" unsafeMetadata={unsafeMetadata} />
         </div>
       </div>
     </main>
@@ -39,7 +43,7 @@ function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<DashboardPage />} />
-        <Route path="sessions" element={<SessionsListPage />} />
+        <Route path="sessions" element={<SessionsPage />} />
         <Route path="sessions/new" element={<SessionFormPage mode="create" />} />
         <Route path="sessions/:id" element={<SessionDetailPage />} />
         <Route path="sessions/:id/edit" element={<SessionFormPage mode="edit" />} />

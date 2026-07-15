@@ -2,6 +2,7 @@ import { UserButton } from "@clerk/react";
 import { BarChart3, House, NotebookPen } from "lucide-react";
 import { NavLink, Outlet } from "react-router";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
 
 const tabs = [
   { to: "/", label: "Dashboard", icon: House },
@@ -21,6 +22,7 @@ export function AppLayout() {
 
       <main className="mx-auto w-full max-w-3xl px-4 pb-24 pt-4">
         <Outlet />
+        <Toaster />
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur">
