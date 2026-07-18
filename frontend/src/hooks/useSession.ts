@@ -1,22 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@clerk/react";
-import type { Session } from "../types/session";
+import type { SessionDetail } from "../types/session";
 import type { FetchError } from "../types/fetchError";
 
-export function useSessions(): {
-  sessions: Session[];
+export function useSession(sessionId: number): {
+  session: SessionDetail | null;
   isLoading: boolean;
   error: FetchError | null;
 } {
-  const [sessions, setSessions] = useState<Session[]>([]);
+  const [session, setSession] = useState<SessionDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<FetchError | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const { getToken, isSignedIn } = useAuth();
 
-  const SESSIONS_URL = import.meta.env.VITE_API_URL + "/sessions";
+  const SESSION_URL = import.meta.env.VITE_API_URL + "/sessions/" + sessionId;
 
-  const fetchSessions = useCallback(async () => {
+  const fetchSessionById = useCallback(async () => {
     // Abort any in-flight request
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
@@ -30,7 +30,7 @@ export function useSessions(): {
       });
 
       try {
-        const response = await fetch(`${SESSIONS_URL}`, {
+        const response = await fetch(`${SESSION_URL}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -45,8 +45,8 @@ export function useSessions(): {
             },
           );
         }
-        const result : Session[] = await response.json();
-        setSessions(result);
+        const result: SessionDetail = await response.json(); // review this
+        setSession(result);
       } catch (err: unknown) {
         const error = err as FetchError;
         if (error.name !== "AbortError") {
@@ -64,13 +64,15 @@ export function useSessions(): {
         status: 401,
       } as FetchError);
     }
-  }, [SESSIONS_URL]);
+  }, [SESSION_URL]);
 
   useEffect(() => {
     if (!isSignedIn) return;
-    fetchSessions();
+    if (sessionId) {
+      fetchSessionById();
+    }
     return () => abortRef.current?.abort();
-  }, [fetchSessions, isSignedIn]);
+  }, [sessionId, fetchSessionById, isSignedIn]);
 
-  return { sessions, isLoading, error };
+  return { session, isLoading, error };
 }
