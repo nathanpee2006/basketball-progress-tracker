@@ -8,7 +8,7 @@ export interface Session {
   overallShotPercentage: number;
 };
 
-interface Drill {
+export interface Drill {
   id: number;
   name: string;
   completionTimeInSeconds: number; 

@@ -1,10 +1,10 @@
-import { SessionsEmptyState } from "@/components/sessions-list/SessionsEmptyState";
-import { SessionsList } from "@/components/sessions-list/SessionsList";
-import { SessionsSkeletonList } from "@/components/sessions-list/SessionsSkeletonList";
-import { useSessions } from "@/hooks/useSessions";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { useSessions } from "./useSessions";
+import { SessionsSkeletonList } from "./components/SessionsSkeletonList";
+import { SessionsEmptyState } from "./components/SessionsEmptyState";
+import { SessionsList } from "./components/SessionsList";
 
 export function SessionsPage() {
   const { sessions, isLoading, error } = useSessions();

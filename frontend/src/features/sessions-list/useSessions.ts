@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@clerk/react";
-import type { Session } from "../types/session";
-import type { FetchError } from "../types/fetchError";
+import type { Session } from "@/types/session";
+import type { FetchError } from "@/types/fetchError";
 
 export function useSessions(): {
   sessions: Session[];

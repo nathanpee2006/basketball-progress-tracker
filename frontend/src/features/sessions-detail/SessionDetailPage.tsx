@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router";
-import { useSession } from "@/hooks/useSession";
-import { SessionDetailSkeleton } from "@/components/sessions-detail/SessionDetailSkeleton";
-import { SessionNotFound } from "@/components/sessions-detail/SessionNotFound";
-import { SessionDetailHeader } from "@/components/sessions-detail/SessionDetailHeader";
-import { SessionStatsBreakdown } from "@/components/sessions-detail/SessionStatsBreakdown";
-import { SessionDrillList } from "@/components/sessions-detail/SessionDrillList";
-import { CourtVisualization } from "@/components/sessions-detail/CourtVisualization";
 import { sessionDetailToZoneStats } from "@/types/court";
+import { useSession } from "./useSession";
+import { SessionDetailSkeleton } from "./components/SessionDetailSkeleton";
+import { SessionNotFound } from "./components/SessionNotFound";
+import { SessionDetailHeader } from "./components/SessionDetailHeader";
+import { CourtVisualization } from "./components/CourtVisualization";
+import { SessionStatsBreakdown } from "./components/SessionStatsBreakdown";
+import { SessionDrillList } from "./components/SessionDrillList";
 
 export function SessionDetailPage() {
   const { id } = useParams();

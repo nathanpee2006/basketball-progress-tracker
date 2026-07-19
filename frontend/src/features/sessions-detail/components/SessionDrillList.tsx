@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Drill} from "@/types/drill"
+import type { Drill } from "@/types/session";
 
 function formatDuration(seconds: number): string {
   const mins = Math.floor(seconds / 60);
