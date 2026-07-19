@@ -1,19 +1,21 @@
-import { SessionsEmptyState } from "@/components/sessions/SessionsEmptyState";
-import { SessionsList } from "@/components/sessions/SessionsList";
-import { SessionsSkeletonList } from "@/components/sessions/SessionsSkeletonList";
+import { SessionsEmptyState } from "@/components/sessions-list/SessionsEmptyState";
+import { SessionsList } from "@/components/sessions-list/SessionsList";
+import { SessionsSkeletonList } from "@/components/sessions-list/SessionsSkeletonList";
 import { useSessions } from "@/hooks/useSessions";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 export function SessionsPage() {
   const { sessions, isLoading, error } = useSessions();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (error) toast.error(error.message);
   }, [error]);
 
   const handleView = (id: number) => {
-    // TODO
+    navigate(`/sessions/${id}`); 
   };
 
   const handleEdit = (id: number) => {
