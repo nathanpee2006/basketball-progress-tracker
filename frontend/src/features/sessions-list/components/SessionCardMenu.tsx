@@ -18,7 +18,7 @@ export function SessionCardMenu({ onView, onEdit, onDelete }: SessionCardMenuPro
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" aria-label="Session actions">
             <MoreVertical className="h-4 w-4" />
           </Button>
         }
