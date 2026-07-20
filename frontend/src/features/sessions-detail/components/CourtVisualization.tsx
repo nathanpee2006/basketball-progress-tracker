@@ -43,7 +43,11 @@ interface CourtVisualizationProps {
   onZoneChange?: (zoneId: ZoneId, makes: number, attempts: number) => void;
 }
 
-export function CourtVisualization({ mode, zones, onZoneChange }: CourtVisualizationProps) {
+export function CourtVisualization({
+  mode,
+  zones,
+  onZoneChange,
+}: CourtVisualizationProps) {
   const [activeZoneId, setActiveZoneId] = useState<ZoneId | null>(null);
   const activeZone = zones.find((z) => z.id === activeZoneId) ?? null;
 
@@ -60,8 +64,8 @@ export function CourtVisualization({ mode, zones, onZoneChange }: CourtVisualiza
       <svg
         viewBox="0 0 400 400"
         className="w-full max-w-sm mx-auto"
-        role="img"
-        aria-label="Court shot zones"
+        role={mode === "edit" ? undefined : "img"}
+        aria-label={mode === "edit" ? undefined : "Court shot zones"}
       >
         {/* Court boundary (sideline / half-court box) */}
         <rect
@@ -99,42 +103,56 @@ export function CourtVisualization({ mode, zones, onZoneChange }: CourtVisualiza
         </g>
 
         {/* Hoop */}
-        <circle cx="200" cy="358" r="6" fill="none" stroke="currentColor" strokeWidth="2" pointerEvents="none" />
+        <circle
+          cx="200"
+          cy="358"
+          r="6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          pointerEvents="none"
+        />
 
-        {zones.map((zone) => (
-          <g key={zone.id}>
-            <path
-              d={ZONE_PATHS[zone.id]}
-              fillRule="evenodd"
-              className={
-                mode === "edit"
-                  ? "fill-orange-500/10 stroke-orange-500 stroke-2 hover:fill-orange-500/20 cursor-pointer transition-colors"
-                  : "fill-orange-500/10 stroke-orange-500 stroke-2"
-              }
-              onClick={() => handleZoneTap(zone.id)}
-              tabIndex={mode === "edit" ? 0 : -1}
-              role={mode === "edit" ? "button" : undefined}
-              aria-label={`${zone.label}: ${zone.makes} of ${zone.attempts} made`}
-              onKeyDown={(e) => {
-                if (mode === "edit" && (e.key === "Enter" || e.key === " ")) {
-                  handleZoneTap(zone.id);
+        <g role={mode === "edit" ? "group" : undefined}>
+          {zones.map((zone) => (
+            <g key={zone.id}>
+              <path
+                d={ZONE_PATHS[zone.id]}
+                fillRule="evenodd"
+                className={
+                  mode === "edit"
+                    ? "fill-orange-500/10 stroke-orange-500 stroke-2 hover:fill-orange-500/20 cursor-pointer transition-colors"
+                    : "fill-orange-500/10 stroke-orange-500 stroke-2"
                 }
-              }}
-            />
-            <text
-              x={ZONE_LABEL_POS[zone.id].x}
-              y={ZONE_LABEL_POS[zone.id].y}
-              textAnchor="middle"
-              className="fill-foreground text-xs font-medium pointer-events-none select-none"
-            >
-              {zone.makes}/{zone.attempts} · {percentage(zone)}%
-            </text>
-          </g>
-        ))}
+                onClick={() => handleZoneTap(zone.id)}
+                tabIndex={mode === "edit" ? 0 : -1}
+                role={mode === "edit" ? "button" : undefined}
+                aria-label={`${zone.label}: ${zone.makes} of ${zone.attempts} made`}
+                onKeyDown={(e) => {
+                  if (mode === "edit" && (e.key === "Enter" || e.key === " ")) {
+                    e.preventDefault();
+                    handleZoneTap(zone.id);
+                  }
+                }}
+              />
+              <text
+                x={ZONE_LABEL_POS[zone.id].x}
+                y={ZONE_LABEL_POS[zone.id].y}
+                textAnchor="middle"
+                className="fill-foreground text-xs font-medium pointer-events-none select-none"
+              >
+                {zone.makes}/{zone.attempts} · {percentage(zone)}%
+              </text>
+            </g>
+          ))}
+        </g>
       </svg>
 
       {mode === "edit" && (
-        <Sheet open={activeZoneId !== null} onOpenChange={(open) => !open && setActiveZoneId(null)}>
+        <Sheet
+          open={activeZoneId !== null}
+          onOpenChange={(open) => !open && setActiveZoneId(null)}
+        >
           <SheetContent side="bottom">
             {activeZone && (
               <ZoneActionSheetContent
@@ -156,7 +174,11 @@ interface ZoneActionSheetContentProps {
   onClose: () => void;
 }
 
-function ZoneActionSheetContent({ zone, onZoneChange, onClose }: ZoneActionSheetContentProps) {
+function ZoneActionSheetContent({
+  zone,
+  onZoneChange,
+  onClose,
+}: ZoneActionSheetContentProps) {
   // Local display state only — mirrors the zone prop so the sheet feels
   // responsive to taps. Not persisted anywhere; parent owns real state
   // once save logic is built.
