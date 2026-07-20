@@ -2,13 +2,12 @@ using System.Security.Claims;
 using Backend.Common.Endpoints;
 using Backend.Common.Services;
 using Backend.Data;
-using Backend.Data.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Features.Sessions;
 
-public class GetSession
+public static class GetSession
 {
     public record Response(
         int Id,
