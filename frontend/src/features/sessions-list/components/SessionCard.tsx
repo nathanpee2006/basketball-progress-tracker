@@ -6,8 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SessionCardMenu } from "@/components/sessions/SessionCardMenu";
-import type { Session } from "types/session";
+import type { Session } from "@/types/session";
+import { SessionCardMenu } from "./SessionCardMenu";
 
 type SessionCardProps = {
   session: Session;

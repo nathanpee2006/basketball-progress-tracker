@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
-import './index.css'
-import App from './App.tsx'
+import '@/assets/index.css'
 import { ClerkProvider } from '@clerk/react'
+import App from './App'
 
 const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 

@@ -1,11 +1,11 @@
 import { SignInButton, SignUpButton, useAuth } from "@clerk/react";
 import { Navigate, Route, Routes } from "react-router";
 import { AppLayout } from "@/layouts/AppLayout";
-import { AnalyticsPage } from "@/pages/AnalyticsPage";
-import { DashboardPage } from "@/pages/DashboardPage";
-import { SessionDetailPage } from "@/pages/SessionDetailPage";
-import { SessionFormPage } from "@/pages/SessionFormPage";
-import { SessionsPage } from "@/pages/SessionsPage";
+import { AnalyticsPage } from "@/features/analytics/AnalyticsPage";
+import { DashboardPage } from "@/features/dashboard/DashboardPage";
+import { SessionDetailPage } from "@/features/sessions-detail/SessionDetailPage";
+import { SessionFormPage } from "@/features/create-edit-session-form/SessionFormPage";
+import { SessionsPage } from "@/features/sessions-list/SessionsPage";
 
 function UnauthenticatedScreen() {
   const unsafeMetadata : SignUpUnsafeMetadata = {

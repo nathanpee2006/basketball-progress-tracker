@@ -1,10 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@clerk/react";
-import type { Session } from "types/session";
-
-type FetchError = Error & {
-  status: number;
-};
+import type { Session } from "@/types/session";
+import type { FetchError } from "@/types/fetchError";
 
 export function useSessions(): {
   sessions: Session[];
@@ -48,8 +45,8 @@ export function useSessions(): {
             },
           );
         }
-        const result = await response.json();
-        setSessions(result as Session[]);
+        const result: Session[] = await response.json();
+        setSessions(result);
       } catch (err: unknown) {
         const error = err as FetchError;
         if (error.name !== "AbortError") {
@@ -59,7 +56,9 @@ export function useSessions(): {
           } as FetchError);
         }
       } finally {
-        setIsLoading(false);
+        if (abortRef.current === controller) { // make sure we only set isLoading to false if this is the latest request and not the old request
+          setIsLoading(false);
+        }
       }
     } catch (error) {
       setError({
@@ -67,7 +66,7 @@ export function useSessions(): {
         status: 401,
       } as FetchError);
     }
-  }, [SESSIONS_URL]);
+  }, [SESSIONS_URL, getToken]);
 
   useEffect(() => {
     if (!isSignedIn) return;

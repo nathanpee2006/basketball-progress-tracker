@@ -1,5 +1,5 @@
 import { SessionCard } from "./SessionCard";
-import type { Session } from "types/session";
+import type { Session } from "@/types/session";
 
 interface SessionsListProps {
   sessions: Session[];
