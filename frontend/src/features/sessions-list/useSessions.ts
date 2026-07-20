@@ -45,7 +45,7 @@ export function useSessions(): {
             },
           );
         }
-        const result : Session[] = await response.json();
+        const result: Session[] = await response.json();
         setSessions(result);
       } catch (err: unknown) {
         const error = err as FetchError;
@@ -56,7 +56,9 @@ export function useSessions(): {
           } as FetchError);
         }
       } finally {
-        setIsLoading(false);
+        if (abortRef.current === controller) { // make sure we only set isLoading to false if this is the latest request and not the old request
+          setIsLoading(false);
+        }
       }
     } catch (error) {
       setError({
@@ -64,7 +66,7 @@ export function useSessions(): {
         status: 401,
       } as FetchError);
     }
-  }, [SESSIONS_URL]);
+  }, [SESSIONS_URL, getToken]);
 
   useEffect(() => {
     if (!isSignedIn) return;

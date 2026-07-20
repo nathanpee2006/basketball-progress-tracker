@@ -45,7 +45,7 @@ export function useSession(sessionId: number): {
             },
           );
         }
-        const result: SessionDetail = await response.json(); // review this
+        const result: SessionDetail = await response.json();
         setSession(result);
       } catch (err: unknown) {
         const error = err as FetchError;
@@ -56,7 +56,9 @@ export function useSession(sessionId: number): {
           } as FetchError);
         }
       } finally {
-        setIsLoading(false);
+        if (abortRef.current === controller) { // make sure we only set isLoading to false if this is the latest request and not the old request
+          setIsLoading(false);
+        }
       }
     } catch (error) {
       setError({
@@ -64,7 +66,7 @@ export function useSession(sessionId: number): {
         status: 401,
       } as FetchError);
     }
-  }, [SESSION_URL]);
+  }, [SESSION_URL, getToken]);
 
   useEffect(() => {
     if (!isSignedIn) return;
