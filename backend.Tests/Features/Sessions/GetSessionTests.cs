@@ -196,6 +196,7 @@ public class GetSessionTests(ApiFixture api) : IClassFixture<ApiFixture>, IAsync
         drillsElement.GetArrayLength().Should().Be(0);
 
         var result = await response.Content.ReadFromJsonAsync<GetSession.Response>();
+        result.Should().NotBeNull();
         result.Drills.Should().NotBeNull();
         result.Drills.Should().BeEmpty();
     }
