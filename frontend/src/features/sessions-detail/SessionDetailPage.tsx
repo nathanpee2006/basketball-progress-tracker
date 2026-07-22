@@ -4,7 +4,7 @@ import { useSession } from "./useSession";
 import { SessionDetailSkeleton } from "./components/SessionDetailSkeleton";
 import { SessionNotFound } from "./components/SessionNotFound";
 import { SessionDetailHeader } from "./components/SessionDetailHeader";
-import { CourtVisualization } from "./components/CourtVisualization";
+import { CourtVisualization } from "../../components/session/CourtVisualization";
 import { SessionStatsBreakdown } from "./components/SessionStatsBreakdown";
 import { SessionDrillList } from "./components/SessionDrillList";
 

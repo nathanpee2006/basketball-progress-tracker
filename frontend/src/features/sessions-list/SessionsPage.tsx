@@ -5,6 +5,8 @@ import { useSessions } from "./useSessions";
 import { SessionsSkeletonList } from "./components/SessionsSkeletonList";
 import { SessionsEmptyState } from "./components/SessionsEmptyState";
 import { SessionsList } from "./components/SessionsList";
+import { Button } from "@/components/ui/button";
+
 
 export function SessionsPage() {
   const { sessions, isLoading, error } = useSessions();
@@ -15,7 +17,7 @@ export function SessionsPage() {
   }, [error]);
 
   const handleView = (id: number) => {
-    navigate(`/sessions/${id}`); 
+    navigate(`/sessions/${id}`);
   };
 
   const handleEdit = (id: number) => {
@@ -27,15 +29,20 @@ export function SessionsPage() {
   };
 
   const handleCreate = () => {
-    // TODO
+    navigate("/sessions/new");
   };
 
   return (
     <section className="space-y-2">
-      <h2 className="text-xl font-semibold">Sessions</h2>
-      <p className="text-sm text-muted-foreground">
-        Session history list with view, edit, and delete actions.
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold">Sessions</h2>
+          <p className="text-sm text-muted-foreground">
+            Session history list with view, edit, and delete actions.
+          </p>
+        </div>
+        <Button onClick={handleCreate}>Log</Button>
+      </div>
 
       {isLoading && <SessionsSkeletonList />}
 
