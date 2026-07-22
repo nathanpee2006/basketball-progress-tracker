@@ -35,11 +35,6 @@ const ZONE_LABEL_POS: Record<ZoneId, { x: number; y: number }> = {
 interface CourtVisualizationProps {
   mode: CourtMode;
   zones: ZoneStats[];
-  /**
-   * Fired when a zone's makes/attempts change in edit mode.
-   * Currently a stub — parent decides what to do with the change.
-   * No API/mutation call here.
-   */
   onZoneChange?: (zoneId: ZoneId, makes: number, attempts: number) => void;
 }
 
@@ -179,9 +174,6 @@ function ZoneActionSheetContent({
   onZoneChange,
   onClose,
 }: ZoneActionSheetContentProps) {
-  // Local display state only — mirrors the zone prop so the sheet feels
-  // responsive to taps. Not persisted anywhere; parent owns real state
-  // once save logic is built.
   const [makes, setMakes] = useState(zone.makes);
   const [attempts, setAttempts] = useState(zone.attempts);
 
@@ -211,7 +203,6 @@ function ZoneActionSheetContent({
           <Button className="w-full" variant="outline" onClick={handleMiss}>
             Miss
           </Button>
-          {/* Undo intentionally omitted — not needed yet per current scope. */}
         </div>
 
         <div className="flex gap-3">
