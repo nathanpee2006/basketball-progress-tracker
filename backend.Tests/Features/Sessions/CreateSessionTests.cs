@@ -88,7 +88,7 @@ public class CreateSessionTests(ApiFixture api) : IClassFixture<ApiFixture>, IAs
         var result = await response.Content.ReadFromJsonAsync<CreateSession.Response>();
 
         result.Should().NotBeNull();
-        response.Headers.Location.Should().Be($"/api/sessions/{result.Id}");
+        response.Headers.Location.Should().Be(new Uri($"/api/sessions/{result.Id}", UriKind.Relative));
         result.Id.Should().BeGreaterThan(0);
         result.Date.Should().Be(request.Date);
         result.PaintMakes.Should().Be(5);
