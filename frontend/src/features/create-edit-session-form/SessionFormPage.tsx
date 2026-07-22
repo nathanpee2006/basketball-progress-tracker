@@ -130,9 +130,9 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
         <ZoneInputs register={register} errors={errors} />
         <FreeThrowInputs register={register} errors={errors} />
         <DrillListEditor
-          control={control}
           register={register}
           fieldArray={drillFieldArray}
+          errors={errors}
         />
 
         <div className="flex gap-3">
