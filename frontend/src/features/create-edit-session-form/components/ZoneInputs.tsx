@@ -35,7 +35,6 @@ export function ZoneInputs({ register, errors }: ZoneInputsProps) {
         )}
       </Field>
 
-      {/* TODO: repeat for midrange, threePoint — same shape */}
       <Field>
         <FieldLabel htmlFor="midrangeMakes">Midrange Makes</FieldLabel>
         <Input
