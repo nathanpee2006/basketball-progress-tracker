@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const drillSchema = z.object({
-  name: z.string().min(1, "Drill name is required"),
+  name: z.string().trim().min(1, "Drill name is required"),
   completionTimeInSeconds: z.number().positive("Must be greater than 0"),
 });
 
@@ -9,17 +9,17 @@ export const sessionFormSchema = z
   .object({
     date: z.string().min(1, "Date is required"),
 
-    paintMakes: z.number().min(0),
-    paintAttempts: z.number().min(0),
+    paintMakes: z.number().int().min(0),
+    paintAttempts: z.number().int().min(0),
 
-    midrangeMakes: z.number().min(0),
-    midrangeAttempts: z.number().min(0),
+    midrangeMakes: z.number().int().min(0),
+    midrangeAttempts: z.number().int().min(0),
 
-    threePointMakes: z.number().min(0),
-    threePointAttempts: z.number().min(0),
+    threePointMakes: z.number().int().min(0),
+    threePointAttempts: z.number().int().min(0),
 
-    freeThrowMakes: z.number().min(0),
-    freeThrowAttempts: z.number().min(0),
+    freeThrowMakes: z.number().int().min(0),
+    freeThrowAttempts: z.number().int().min(0),
 
     drills: z.array(drillSchema),
   })
