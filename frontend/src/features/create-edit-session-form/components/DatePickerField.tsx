@@ -8,10 +8,16 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import type { SessionFormValues } from "../schemas/sessionFormSchema";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { format } from "date-fns/format";
+import { format, parse } from "date-fns";
 
 interface DatePickerFieldProps {
   control: Control<SessionFormValues>;
+}
+
+const DATE_FORMAT = "yyyy-MM-dd";
+
+function parseStoredDate(value: string): Date {
+  return parse(value, DATE_FORMAT, new Date());
 }
 
 export function DatePickerField({ control }: DatePickerFieldProps) {
@@ -32,7 +38,7 @@ export function DatePickerField({ control }: DatePickerFieldProps) {
                   aria-invalid={fieldState.invalid}
                 >
                   {field.value ? (
-                    format(new Date(field.value), "PPP")
+                    format(parseStoredDate(field.value), "PPP")
                   ) : (
                     <span>Pick a date</span>
                   )}
@@ -42,11 +48,11 @@ export function DatePickerField({ control }: DatePickerFieldProps) {
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                selected={field.value ? new Date(field.value) : undefined}
+                selected={field.value ? parseStoredDate(field.value) : undefined}
                 onSelect={(date) =>
-                  field.onChange(date ? date.toISOString().slice(0, 10) : "")
+                  field.onChange(date ? format(date, DATE_FORMAT) : "")
                 }
-                defaultMonth={field.value ? new Date(field.value) : undefined}
+                defaultMonth={field.value ? parseStoredDate(field.value) : undefined}
               />
             </PopoverContent>
           </Popover>
