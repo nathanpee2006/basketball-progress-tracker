@@ -59,7 +59,8 @@ public static class CreateSession
             RuleFor(r => r.ThreePointAttempts).GreaterThanOrEqualTo(0);
             RuleFor(r => r.FreeThrowMakes).GreaterThanOrEqualTo(0).LessThanOrEqualTo(r => r.FreeThrowAttempts);
             RuleFor(r => r.FreeThrowAttempts).GreaterThanOrEqualTo(0);
-            RuleForEach(r => r.Drills).SetValidator(new DrillValidator()); // Note: exception gets thrown when null is provided 
+            RuleFor(r => r.Drills).NotNull();
+            RuleForEach(r => r.Drills).SetValidator(new DrillValidator()); 
         }
     }
 
