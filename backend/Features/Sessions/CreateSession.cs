@@ -60,7 +60,7 @@ public static class CreateSession
             RuleFor(r => r.FreeThrowMakes).GreaterThanOrEqualTo(0).LessThanOrEqualTo(r => r.FreeThrowAttempts);
             RuleFor(r => r.FreeThrowAttempts).GreaterThanOrEqualTo(0);
             RuleFor(r => r.Drills).NotNull();
-            RuleForEach(r => r.Drills).SetValidator(new DrillValidator()); 
+            RuleForEach(r => r.Drills).SetValidator(new DrillValidator());
         }
     }
 
@@ -145,11 +145,13 @@ public static class CreateSession
             session.FreeThrowAttempts,
             overallMakes,
             overallAttempts,
-            session.PaintAttempts == 0 ? 0 : session.PaintMakes * 100 / session.PaintAttempts,
-            session.MidrangeAttempts == 0 ? 0 : session.MidrangeMakes * 100 / session.MidrangeAttempts,
-            session.ThreePointAttempts == 0 ? 0 : session.ThreePointMakes * 100 / session.ThreePointAttempts,
-            session.FreeThrowAttempts == 0 ? 0 : session.FreeThrowMakes * 100 / session.FreeThrowAttempts,
-            overallAttempts == 0 ? 0 : overallMakes * 100 / overallAttempts,
+            PaintShotPercentage: session.PaintAttempts != 0 ? (int)Math.Round((double)session.PaintMakes / session.PaintAttempts * 100) : 0,
+            MidrangeShotPercentage: session.MidrangeAttempts != 0 ? (int)Math.Round((double)session.MidrangeMakes / session.MidrangeAttempts * 100) : 0,
+            ThreePointShotPercentage: session.ThreePointAttempts != 0 ? (int)Math.Round((double)session.ThreePointMakes / session.ThreePointAttempts * 100) : 0,
+            FreeThrowShotPercentage: session.FreeThrowAttempts != 0 ? (int)Math.Round((double)session.FreeThrowMakes / session.FreeThrowAttempts * 100) : 0,
+            OverallShotPercentage: (session.PaintAttempts + session.MidrangeAttempts + session.ThreePointAttempts + session.FreeThrowAttempts) != 0
+                ? (int)Math.Round((double)(session.PaintMakes + session.MidrangeMakes + session.ThreePointMakes + session.FreeThrowMakes) / (session.PaintAttempts + session.MidrangeAttempts + session.ThreePointAttempts + session.FreeThrowAttempts) * 100)
+                : 0,
             [.. session.Drills.Select(d => new DrillResponse(d.Id, d.Name, d.CompletionTimeInSeconds))]
         ));
     }
