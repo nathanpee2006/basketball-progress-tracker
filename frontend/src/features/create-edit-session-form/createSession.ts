@@ -25,7 +25,7 @@ export function useCreateSession(): {
 
       try {
         const token = await getToken({
-          template: "jwt-testing-template",
+          template: "jwt-basketball-progress-tracker",
         });
 
         try {
