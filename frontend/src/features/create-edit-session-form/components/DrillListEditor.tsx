@@ -25,16 +25,18 @@ export function DrillListEditor({
   return (
     <div className="space-y-3">
       {fields.map((field, index) => (
-        <div key={field.id} className="flex gap-2 items-end">
+        <div key={field.id} className="flex gap-2 items-center">
           <Field className="flex-1">
             <FieldLabel htmlFor={`drills.${index}.name`}>Drill Name</FieldLabel>
             <Input
               id={`drills.${index}.name`}
               {...register(`drills.${index}.name`)}
             />
-            <span className="text-sm text-destructive min-h-5 block">
-              {errors.drills?.[index]?.name?.message}
-            </span>
+            {errors.drills?.[index]?.name && (
+              <span className="text-sm text-destructive">
+                {errors.drills[index].name.message}
+              </span>
+            )}
           </Field>
 
           <Field className="w-32">
@@ -48,14 +50,17 @@ export function DrillListEditor({
                 valueAsNumber: true,
               })}
             />
-            <span className="text-sm text-destructive min-h-5 block">
-              {errors.drills?.[index]?.completionTimeInSeconds?.message}
-            </span>
+            {errors.drills?.[index]?.completionTimeInSeconds && (
+              <span className="text-sm text-destructive">
+                {errors.drills[index].completionTimeInSeconds.message}
+              </span>
+            )}
           </Field>
 
           <Button
             type="button"
             variant="destructive"
+            className="mt-6 shrink-0"
             aria-label={`Remove drill ${index + 1}`}
             onClick={() => remove(index)}
           >
@@ -64,7 +69,6 @@ export function DrillListEditor({
               aria-hidden="true"
               focusable="false"
             />
-            X
           </Button>
         </div>
       ))}
