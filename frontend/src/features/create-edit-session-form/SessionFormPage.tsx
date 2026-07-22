@@ -12,7 +12,7 @@ import { DrillListEditor } from "./components/DrillListEditor";
 import { DatePickerField } from "./components/DatePickerField";
 import { CourtVisualization } from "@/components/session/CourtVisualization";
 import { zoneFieldsToZoneStats, type ZoneId } from "@/types/court";
-import { useCreateSession } from "./createSession";
+import { useCreateSession } from "./useCreationSession";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -96,7 +96,7 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
 
   const drillFieldArray = useFieldArray({ control, name: "drills" });
 
-  const { createSession, isLoading: isCreating, error: createError } = useCreateSession();
+  const { createSession, isLoading: isCreating } = useCreateSession();
 
   const onSubmit = async (data: SessionFormValues) => {
     if (mode === "create") {
@@ -105,10 +105,8 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
         navigate("/sessions");
         toast.success("Session created successfully!");
       } catch (error) {
-        console.error("Error creating session:", createError?.message);
-        toast.error("Failed to create session.");
+        toast.error(`Failed to create session.`);
       }
-      
     } else {
       // PUT request to /sessions/:id
     }
@@ -137,10 +135,17 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
 
         <div className="flex gap-3">
           <Button type="submit" disabled={isCreating}>
-            <Spinner className={`mr-2 h-4 w-4 animate-spin ${isCreating ? "inline-block" : "hidden"}`} data-icon="inline-start" />
+            <Spinner
+              className={`mr-2 h-4 w-4 animate-spin ${isCreating ? "inline-block" : "hidden"}`}
+              data-icon="inline-start"
+            />
             {isCreating ? "Saving..." : "Save"}
           </Button>
-          <Button type="button" variant="destructive" onClick={() => navigate("/sessions")}>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => navigate("/sessions")}
+          >
             Cancel
           </Button>
         </div>
