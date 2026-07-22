@@ -13,7 +13,7 @@ Drills are optional per session—a player can log shooting-only sessions, drill
 - [✅] Drill schema stores completion time in seconds
 - [✅] Drill schema stores creation timestamp
 - [ ] API POST endpoint accepts a drill creation payload (name, time, session ID)
-- [ ] API returns 400 on invalid drill data (missing name, invalid time)
+- [✅] API returns 400 on invalid drill data (missing name, invalid time)
 - [✅ ] API GET endpoint returns a session with all linked drills
 - [✅] A session can exist with zero drills (shooting only)
 - [ ] A session can exist with only drills (no shooting data)
