@@ -28,8 +28,8 @@ export function SessionsPage() {
     try {
       await deleteSession(id);
       toast.success("Session deleted successfully");
-    } catch (err) {
-      toast.error("Failed to delete session");
+    } catch {
+      
     }
   };
 

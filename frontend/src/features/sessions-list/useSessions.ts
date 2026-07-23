@@ -106,6 +106,7 @@ export function useSessions(): {
         message: error.message,
         status: error.status,
       } as FetchError);
+      throw error; 
     }
   };
 
