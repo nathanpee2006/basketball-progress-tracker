@@ -33,6 +33,7 @@ export function useCreateSession(): {
           message: "Failed to get auth token",
           status: 401,
         } as FetchError;
+        setIsLoading(false);
         setError(authError);
         throw authError;
       }
