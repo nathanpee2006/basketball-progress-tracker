@@ -16,17 +16,17 @@ public class CreateSessionTests(ApiFixture api) : IClassFixture<ApiFixture>, IAs
     public Task DisposeAsync() => Task.CompletedTask;
 
     private static CreateSession.Request ValidRequest() => new(
-    Date: new DateOnly(2026, 1, 10),
-    PaintMakes: 5,
-    PaintAttempts: 10,
-    MidrangeMakes: 3,
-    MidrangeAttempts: 10,
-    ThreePointMakes: 2,
-    ThreePointAttempts: 10,
-    FreeThrowMakes: 8,
-    FreeThrowAttempts: 10,
-    Drills: [new CreateSession.DrillRequest("4x4", 150)]
-);
+        Date: new DateOnly(2026, 1, 10),
+        PaintMakes: 5,
+        PaintAttempts: 10,
+        MidrangeMakes: 3,
+        MidrangeAttempts: 10,
+        ThreePointMakes: 2,
+        ThreePointAttempts: 10,
+        FreeThrowMakes: 8,
+        FreeThrowAttempts: 10,
+        Drills: [new CreateSession.DrillRequest("4x4", 150)]
+    );
 
     [Fact]
     public async Task Returns_unauthorized_when_no_token()

@@ -1,6 +1,8 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useNavigate } from "react-router";
+import { useSession } from "../sessions-detail/useSession";
+import { useUpdateSession } from "./useUpdateSession";
 import {
   sessionFormSchema,
   type SessionFormValues,
@@ -12,9 +14,11 @@ import { DrillListEditor } from "./components/DrillListEditor";
 import { DatePickerField } from "./components/DatePickerField";
 import { CourtVisualization } from "@/components/session/CourtVisualization";
 import { zoneFieldsToZoneStats, type ZoneId } from "@/types/court";
-import { useCreateSession } from "./useCreationSession";
+import { useCreateSession } from "./useCreateSession";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { SessionNotFound } from "../../components/session/SessionNotFound";
+import { SessionDetailSkeleton } from "../../components/session/SessionDetailSkeleton";
 
 type SessionFormPageProps = {
   mode: "create" | "edit";
@@ -36,11 +40,31 @@ const defaultValues: SessionFormValues = {
 export function SessionFormPage({ mode }: SessionFormPageProps) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { session, isLoading: isSessionLoading } = useSession(Number(id));
+
+  const formValues =
+    mode === "edit" && session
+      ? {
+          date: session.date,
+          paintMakes: session.paintMakes,
+          paintAttempts: session.paintAttempts,
+          midrangeMakes: session.midrangeMakes,
+          midrangeAttempts: session.midrangeAttempts,
+          threePointMakes: session.threePointMakes,
+          threePointAttempts: session.threePointAttempts,
+          freeThrowMakes: session.freeThrowMakes,
+          freeThrowAttempts: session.freeThrowAttempts,
+          drills: session.drills.map((drill) => ({
+            name: drill.name,
+            completionTimeInSeconds: drill.completionTimeInSeconds,
+          })),
+        }
+      : defaultValues;
 
   const form = useForm<SessionFormValues>({
     resolver: zodResolver(sessionFormSchema),
     defaultValues,
-    // TODO if mode === "edit": fetch existing session and pass via `values` prop instead of defaultValues, so the form updates once data loads
+    values: formValues,
   });
 
   const {
@@ -51,6 +75,7 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
     setValue,
     formState: { errors },
   } = form;
+
   const watchedZoneFields = watch([
     "paintMakes",
     "paintAttempts",
@@ -61,6 +86,7 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
     "freeThrowMakes",
     "freeThrowAttempts",
   ]);
+
   const zones = zoneFieldsToZoneStats({
     paintMakes: watchedZoneFields[0],
     paintAttempts: watchedZoneFields[1],
@@ -97,6 +123,7 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
   const drillFieldArray = useFieldArray({ control, name: "drills" });
 
   const { createSession, isLoading: isCreating } = useCreateSession();
+  const { updateSession, isLoading: isUpdating } = useUpdateSession();
 
   const onSubmit = async (data: SessionFormValues) => {
     if (mode === "create") {
@@ -107,10 +134,23 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
       } catch (error) {
         toast.error(`Failed to create session.`);
       }
-    } else {
-      // PUT request to /sessions/:id
+    }
+    if (mode === "edit" && id) {
+      try {
+        await updateSession(Number(id), data);
+        navigate(`/sessions/${id}`);
+        toast.success("Session updated successfully!");
+      } catch (error) {
+        toast.error(`Failed to update session.`);
+      }
     }
   };
+
+  if (isSessionLoading) {
+    return <SessionDetailSkeleton />;
+  } else if (mode === "edit" && !session && !isSessionLoading) {
+    return <SessionNotFound onBackToSessions={() => navigate("/sessions")} />;
+  }
 
   return (
     <section className="space-y-2">
@@ -134,12 +174,12 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
         />
 
         <div className="flex gap-3">
-          <Button type="submit" disabled={isCreating}>
+          <Button type="submit" disabled={isCreating || isUpdating}>
             <Spinner
-              className={`mr-2 h-4 w-4 animate-spin ${isCreating ? "inline-block" : "hidden"}`}
+              className={`mr-2 h-4 w-4 animate-spin ${isCreating || isUpdating ? "inline-block" : "hidden"}`}
               data-icon="inline-start"
             />
-            {isCreating ? "Saving..." : "Save"}
+            {isCreating || isUpdating ? "Saving..." : "Save"}
           </Button>
           <Button
             type="button"

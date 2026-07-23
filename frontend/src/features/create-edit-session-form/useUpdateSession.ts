@@ -4,8 +4,8 @@ import type { FetchError } from "@/types/fetchError";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@clerk/react";
 
-export function useCreateSession(): {
-  createSession: (data: SessionFormValues) => Promise<SessionDetail>;
+export function useUpdateSession(): {
+  updateSession: (sessionId: number, data: SessionFormValues) => Promise<SessionDetail>;
   isLoading: boolean;
   error: FetchError | null;
 } {
@@ -16,8 +16,8 @@ export function useCreateSession(): {
 
   const SESSIONS_URL = import.meta.env.VITE_API_URL + "/sessions";
 
-  const createSession = useCallback(
-    async (data: SessionFormValues): Promise<SessionDetail> => {
+  const updateSession = useCallback(
+    async (sessionId: number, data: SessionFormValues): Promise<SessionDetail> => {
       const controller = new AbortController();
       abortRef.current = controller;
       setIsLoading(true);
@@ -26,20 +26,21 @@ export function useCreateSession(): {
       let token: string | null;
       try {
         token = await getToken({
-          template: "jwt-testing-template",
+          template: "jwt-basketball-progress-tracker",
         });
       } catch {
         const authError = {
           message: "Failed to get auth token",
           status: 401,
         } as FetchError;
+        setIsLoading(false);
         setError(authError);
         throw authError;
       }
 
       try {
-        const response = await fetch(SESSIONS_URL, {
-          method: "POST",
+        const response = await fetch(`${SESSIONS_URL}/${sessionId}`, {
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -78,5 +79,5 @@ export function useCreateSession(): {
     return () => abortRef.current?.abort();
   }, []);
 
-  return { createSession, isLoading, error };
+  return { updateSession, isLoading, error };
 }

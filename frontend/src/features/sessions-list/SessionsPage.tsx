@@ -21,7 +21,7 @@ export function SessionsPage() {
   };
 
   const handleEdit = (id: number) => {
-    // TODO
+    navigate(`/sessions/${id}/edit`); 
   };
 
   const handleDelete = (id: number) => {
