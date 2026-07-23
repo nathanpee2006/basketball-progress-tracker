@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 
 export function SessionsPage() {
-  const { sessions, isLoading, error } = useSessions();
+  const { sessions, isLoading, error, deleteSession } = useSessions();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,8 +24,13 @@ export function SessionsPage() {
     navigate(`/sessions/${id}/edit`); 
   };
 
-  const handleDelete = (id: number) => {
-    // TODO
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteSession(id);
+      toast.success("Session deleted successfully");
+    } catch (err) {
+      toast.error("Failed to delete session");
+    }
   };
 
   const handleCreate = () => {

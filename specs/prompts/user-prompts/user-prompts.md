@@ -29,3 +29,4 @@ Implement test cases for the GetSessionEndpoint. Give suggestions as well for ot
     4. 404 when valid session id is provided but the session does not belong to the player     
     5. 200 when session exists for the given session id with expected data and drill responses
 
+Justify why a useCallback function is necessary for deleting a session. From my understanding useCallback is used to return a function back to me on initial render. React will then check that when the array of dependencies change it will provide me a new function. Why would I need a new function when I only need one function to delete a session?
