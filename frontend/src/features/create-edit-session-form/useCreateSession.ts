@@ -26,7 +26,7 @@ export function useCreateSession(): {
       let token: string | null;
       try {
         token = await getToken({
-          template: "jwt-testing-template",
+          template: "jwt-basketball-progress-tracker",
         });
       } catch {
         const authError = {
