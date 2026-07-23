@@ -7,6 +7,7 @@ export function useSessions(): {
   sessions: Session[];
   isLoading: boolean;
   error: FetchError | null;
+  deleteSession: (id: number) => Promise<void>;
 } {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +57,8 @@ export function useSessions(): {
           } as FetchError);
         }
       } finally {
-        if (abortRef.current === controller) { // make sure we only set isLoading to false if this is the latest request and not the old request
+        if (abortRef.current === controller) {
+          // make sure we only set isLoading to false if this is the latest request and not the old request
           setIsLoading(false);
         }
       }
@@ -68,11 +70,51 @@ export function useSessions(): {
     }
   }, [SESSIONS_URL, getToken]);
 
+  const deleteSession = async (id: number) => {
+    let token: string | null;
+    try {
+      token = await getToken({
+        template: "jwt-basketball-progress-tracker",
+      });
+    } catch {
+      const authError = {
+        message: "Failed to get auth token",
+        status: 401,
+      } as FetchError;
+      throw authError;
+    }
+
+    try {
+      const response = await fetch(`${SESSIONS_URL}/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw Object.assign(new Error(errData.message || response.statusText), {
+          status: response.status,
+        });
+      }
+      setSessions((prevSessions) =>
+        prevSessions.filter((session) => session.id !== id),
+      );
+    } catch (err: unknown) {
+      const error = err as FetchError;
+      setError({
+        message: error.message,
+        status: error.status,
+      } as FetchError);
+      throw error; 
+    }
+  };
+
   useEffect(() => {
     if (!isSignedIn) return;
     fetchSessions();
     return () => abortRef.current?.abort();
   }, [fetchSessions, isSignedIn]);
 
-  return { sessions, isLoading, error };
+  return { sessions, isLoading, error, deleteSession };
 }
