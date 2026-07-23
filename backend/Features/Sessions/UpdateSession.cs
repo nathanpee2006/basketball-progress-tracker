@@ -115,7 +115,7 @@ public static class UpdateSession
 
         var session = await context.Sessions
             .Include(s => s.Drills)
-            .FirstOrDefaultAsync(s => s.Id == id);
+            .FirstOrDefaultAsync(s => s.Id == id && s.PlayerId == player.Id);
         if (session is null)
         {
             return TypedResults.NotFound();
