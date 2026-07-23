@@ -18,6 +18,7 @@ import { useCreateSession } from "./useCreateSession";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { SessionNotFound } from "../../components/session/SessionNotFound";
+import { SessionDetailSkeleton } from "../../components/session/SessionDetailSkeleton";
 
 type SessionFormPageProps = {
   mode: "create" | "edit";
@@ -39,7 +40,7 @@ const defaultValues: SessionFormValues = {
 export function SessionFormPage({ mode }: SessionFormPageProps) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { session } = useSession(Number(id));
+  const { session, isLoading: isSessionLoading } = useSession(Number(id));
 
   const formValues =
     mode === "edit" && session
@@ -145,7 +146,9 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
     }
   };
 
-  if (mode === "edit" && !session) {
+  if (isSessionLoading) {
+    return <SessionDetailSkeleton />;
+  } else if (mode === "edit" && !session && !isSessionLoading) {
     return <SessionNotFound onBackToSessions={() => navigate("/sessions")} />;
   }
 

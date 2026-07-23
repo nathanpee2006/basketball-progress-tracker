@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
 import { sessionDetailToZoneStats } from "@/types/court";
 import { useSession } from "./useSession";
-import { SessionDetailSkeleton } from "./components/SessionDetailSkeleton";
+import { SessionDetailSkeleton } from "../../components/session/SessionDetailSkeleton";
 import { SessionNotFound } from "../../components/session/SessionNotFound";
 import { SessionDetailHeader } from "./components/SessionDetailHeader";
 import { CourtVisualization } from "../../components/session/CourtVisualization";
