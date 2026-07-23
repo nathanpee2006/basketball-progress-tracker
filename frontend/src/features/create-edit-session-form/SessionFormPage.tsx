@@ -39,7 +39,7 @@ const defaultValues: SessionFormValues = {
 export function SessionFormPage({ mode }: SessionFormPageProps) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { session, isLoading: isSessionLoading } = useSession(Number(id));
+  const { session } = useSession(Number(id));
 
   const formValues =
     mode === "edit" && session
@@ -145,7 +145,7 @@ export function SessionFormPage({ mode }: SessionFormPageProps) {
     }
   };
 
-  if (mode === "edit" && !isSessionLoading && !session) {
+  if (mode === "edit" && !session) {
     return <SessionNotFound onBackToSessions={() => navigate("/sessions")} />;
   }
 
