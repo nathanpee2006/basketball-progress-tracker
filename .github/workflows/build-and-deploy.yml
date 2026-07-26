@@ -67,8 +67,27 @@ jobs:
           push: true
           tags: ${{ steps.vars.outputs.image-tag }}
 
+  migrate-database:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install EF Core tools
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Apply migrations
+        working-directory: backend
+        run: dotnet ef database update --connection "${{ secrets.NEON_CONNECTION_STRING }}"
+
   deploy:
-    needs: build-and-push-image
+    needs: [build-and-push-image, migrate-database]
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Azure Web App
