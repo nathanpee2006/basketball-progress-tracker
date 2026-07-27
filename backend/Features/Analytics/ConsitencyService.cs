@@ -112,7 +112,7 @@ public class ConsistencyService : IConsistencyService
     {
         int months = (to.Year - from.Year) * 12 + (to.Month - from.Month);
         double fraction = (to.Day - from.Day) / 30.0;
-        return Math.Max(1, months + fraction + 1);
+        return Math.Max(1, months + fraction);
     }
 
     private static TimeZoneInfo ResolveTimeZone(string tzId)
