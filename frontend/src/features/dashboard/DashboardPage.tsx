@@ -7,12 +7,14 @@ import { QuickAnalyticsSnapshot } from "./components/QuickAnalyticsSnapshot";
 import { SessionsSkeletonList } from "../../components/session/SessionsSkeletonList";
 import { SessionsEmptyState } from "../../components/session/SessionsEmptyState";
 import { SessionsList } from "@/components/session/SessionsList";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 const RECENT_SESSIONS_LIMIT = 5;
 
 export function DashboardPage() {
   const navigate = useNavigate();
-  const { consistency, isLoading: isConsistencyLoading } = useConsistency();
+  const { consistency, isLoading: isConsistencyLoading, error: ConsistencyError } = useConsistency();
   const {
     sessions,
     isLoading: isSessionsLoading,
@@ -20,11 +22,23 @@ export function DashboardPage() {
     deleteSession,
   } = useSessions();
 
+  useEffect(() => {
+    if (SessionError) toast.error(SessionError.message);
+    if (ConsistencyError) toast.error(ConsistencyError.message);
+  }, [SessionError, ConsistencyError]);
+
   const recentSessions = (sessions ?? []).slice(0, RECENT_SESSIONS_LIMIT);
 
   const handleView = (id: number) => navigate(`/sessions/${id}`);
   const handleEdit = (id: number) => navigate(`/sessions/${id}/edit`);
-  const handleDelete = async (id: number) => await deleteSession(id);
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteSession(id);
+      toast.success("Session deleted successfully");
+    } catch {
+      toast.error("Failed to delete session"); 
+    }
+  };
   const handleCreate = () => navigate("/sessions/new");
 
   return (
@@ -54,7 +68,7 @@ export function DashboardPage() {
         <SessionsEmptyState onCreateClick={handleCreate} />
       )}
 
-      {!isSessionsLoading && !SessionError && recentSessions.length > 0 && (
+      {!isSessionsLoading && recentSessions.length > 0 && (
         <SessionsList
           sessions={recentSessions}
           onView={handleView}
