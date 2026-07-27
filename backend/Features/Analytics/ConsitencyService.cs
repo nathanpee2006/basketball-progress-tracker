@@ -26,6 +26,9 @@ public class ConsistencyService : IConsistencyService
     {
         var player = await _db.Players.AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == playerId, ct);
+        
+        if (player is null)
+            throw new KeyNotFoundException($"Player with ID {playerId} not found.");
 
         var sessions = await _db.Sessions.AsNoTracking()
             .Where(s => s.PlayerId == playerId)

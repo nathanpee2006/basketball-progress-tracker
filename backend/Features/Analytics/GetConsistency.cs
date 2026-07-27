@@ -35,6 +35,14 @@ public static class GetConsistency
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(await consistencyService.GetConsistencyAsync(player.Id, cancellationToken));
+        try
+        {
+            var consistency = await consistencyService.GetConsistencyAsync(player.Id, cancellationToken);
+            return TypedResults.Ok(consistency);    
+        }
+        catch (KeyNotFoundException)
+        {
+            return TypedResults.NotFound();
+        }
     }
 }
