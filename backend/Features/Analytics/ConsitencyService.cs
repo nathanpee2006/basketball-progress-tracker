@@ -26,7 +26,7 @@ public class ConsistencyService : IConsistencyService
     {
         var player = await _db.Players.AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == playerId, ct);
-        
+
         if (player is null)
             throw new KeyNotFoundException($"Player with ID {playerId} not found.");
 
@@ -86,6 +86,7 @@ public class ConsistencyService : IConsistencyService
             count++;
             w = w.PreviousWeek();
         }
+
         return count;
     }
 
@@ -94,7 +95,7 @@ public class ConsistencyService : IConsistencyService
         int longest = 0;
         foreach (var week in liveWeeks)
         {
-            if (liveWeeks.Contains(week.PreviousWeek())) continue; 
+            if (liveWeeks.Contains(week.PreviousWeek())) continue;
 
             int runLength = 0;
             var w = week;
@@ -103,8 +104,10 @@ public class ConsistencyService : IConsistencyService
                 runLength++;
                 w = w.NextWeek();
             }
+
             longest = Math.Max(longest, runLength);
         }
+
         return longest;
     }
 
@@ -117,7 +120,17 @@ public class ConsistencyService : IConsistencyService
 
     private static TimeZoneInfo ResolveTimeZone(string tzId)
     {
-        try { return TimeZoneInfo.FindSystemTimeZoneById(tzId); }
-        catch (TimeZoneNotFoundException) { return TimeZoneInfo.Utc; }
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById(tzId);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            return TimeZoneInfo.Utc;
+        }
+        catch (InvalidTimeZoneException)
+        {
+            return TimeZoneInfo.Utc;
+        }
     }
 }
