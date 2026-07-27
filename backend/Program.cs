@@ -5,6 +5,7 @@ using Scalar.AspNetCore;
 using Backend.Data;
 using Backend.Common.Endpoints;
 using Backend.Common.Services;
+using backend.Features.Analytics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,7 @@ builder.Services.AddEndpoints();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IConsistencyService, ConsistencyService>();
 
 var app = builder.Build();
 

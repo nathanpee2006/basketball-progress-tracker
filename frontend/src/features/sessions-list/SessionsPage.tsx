@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { useSessions } from "./useSessions";
-import { SessionsSkeletonList } from "./components/SessionsSkeletonList";
-import { SessionsEmptyState } from "./components/SessionsEmptyState";
-import { SessionsList } from "./components/SessionsList";
-import { Button } from "@/components/ui/button";
+import { SessionsSkeletonList } from "../../components/session/SessionsSkeletonList";
+import { SessionsEmptyState } from "../../components/session/SessionsEmptyState";
+import { LogSessionButton } from "../../components/session/LogSessionButton";
+import { SessionsList } from "@/components/session/SessionsList";
 
 
 export function SessionsPage() {
@@ -39,14 +39,14 @@ export function SessionsPage() {
 
   return (
     <section className="space-y-2">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold">Sessions</h2>
           <p className="text-sm text-muted-foreground">
             Session history list with view, edit, and delete actions.
           </p>
         </div>
-        <Button onClick={handleCreate}>Log</Button>
+        <LogSessionButton onClick={handleCreate} />
       </div>
 
       {isLoading && <SessionsSkeletonList />}

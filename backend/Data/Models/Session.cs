@@ -8,6 +8,8 @@ namespace Backend.Data.Models
         
         public DateOnly Date { get; set; }
         
+        public DateTime DateAssignedAt { get; set; } = DateTime.UtcNow;
+        
         public int PaintMakes { get; set; }
         public int PaintAttempts { get; set; }
         

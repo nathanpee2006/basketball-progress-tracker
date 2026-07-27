@@ -1,4 +1,4 @@
-import { SessionCard } from "./SessionCard";
+import { SessionCard } from "@/features/sessions-list/components/SessionCard";
 import type { Session } from "@/types/session";
 
 interface SessionsListProps {
