@@ -121,7 +121,12 @@ public static class UpdateSession
             return TypedResults.NotFound();
         }
 
-        session.Date = request.Date;
+        if (session.Date != request.Date)
+        {
+            session.Date = request.Date;
+            session.DateAssignedAt = DateTime.UtcNow;
+        }
+        
         session.PaintMakes = request.PaintMakes;
         session.PaintAttempts = request.PaintAttempts;
         session.MidrangeMakes = request.MidrangeMakes;
