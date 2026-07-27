@@ -15,7 +15,8 @@ export function useConsistency(): {
   const abortRef = useRef<AbortController | null>(null);
   const { getToken } = useAuth();
 
-  const CONSISTENCY_URL = import.meta.env.VITE_API_URL + "/analytics/consistency";
+  const CONSISTENCY_URL =
+    import.meta.env.VITE_API_URL + "/analytics/consistency";
 
   const fetchConsistency = useCallback(async (): Promise<void> => {
     abortRef.current?.abort();
@@ -34,9 +35,11 @@ export function useConsistency(): {
         message: "Failed to get auth token",
         status: 401,
       } as FetchError;
-      setIsLoading(false);
+      if (abortRef.current === controller) {
+        setIsLoading(false);
+      }
       setError(authError);
-      throw authError;
+      return;
     }
 
     try {
@@ -49,10 +52,9 @@ export function useConsistency(): {
       });
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
-        throw Object.assign(
-          new Error(errData.message || response.statusText),
-          { status: response.status },
-        );
+        throw Object.assign(new Error(errData.message || response.statusText), {
+          status: response.status,
+        });
       }
       const result: Consistency = await response.json();
       setConsistency(result);
