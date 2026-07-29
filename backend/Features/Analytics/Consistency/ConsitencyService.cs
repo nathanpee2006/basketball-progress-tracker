@@ -1,7 +1,7 @@
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Features.Analytics;
+namespace backend.Features.Analytics.Consistency;
 
 public record ConsistencyDto(
     int CurrentStreakWeeks,

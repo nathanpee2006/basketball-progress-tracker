@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Consistency } from "../types.ts/consistency";
-import { MetricCard } from "./MetricCard";
+import type { Consistency } from "../types/consistency";
+import { MetricCard } from "@/components/analytics/MetricCard";
 
 interface QuickAnalyticsSnapshotProps {
   consistency: Consistency | null;

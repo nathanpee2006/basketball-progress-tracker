@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace backend.Features.Analytics;
+namespace backend.Features.Analytics.Consistency;
 
 public static class IsoWeekHelper
 {

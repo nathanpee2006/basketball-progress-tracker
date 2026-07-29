@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Flame } from "lucide-react";
-import type { Consistency } from "../types.ts/consistency";
+import type { Consistency } from "../types/consistency";
 
 interface WeeklyStreakHeroProps {
   consistency: Consistency | null;

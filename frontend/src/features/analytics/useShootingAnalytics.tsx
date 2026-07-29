@@ -1,24 +1,29 @@
-import type { Consistency } from "./types/consistency";
 import type { FetchError } from "@/types/fetchError";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@clerk/react";
+import { format } from "date-fns";
+import type { DateRange } from "react-day-picker";
+import type { ShootingAnalyticsResponse } from "./types/analytics";
 
-export function useConsistency(): {
-  consistency: Consistency | null;
+export function useShootingAnalytics(): {
+  analytics: ShootingAnalyticsResponse | null;
   isLoading: boolean;
   error: FetchError | null;
+  dateRange: DateRange | undefined;
+  setDateRange: (range: DateRange | undefined) => void;
   refetch: () => Promise<void>;
 } {
-  const [consistency, setConsistency] = useState<Consistency | null>(null);
+  const [analytics, setAnalytics] = useState<ShootingAnalyticsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<FetchError | null>(null);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const abortRef = useRef<AbortController | null>(null);
   const { getToken } = useAuth();
 
-  const CONSISTENCY_URL =
-    import.meta.env.VITE_API_URL + "/analytics/consistency";
+  const ANALYTICS_BASE_URL =
+    import.meta.env.VITE_API_URL + "/analytics/shooting";
 
-  const fetchConsistency = useCallback(async (): Promise<void> => {
+  const fetchAnalytics = useCallback(async (): Promise<void> => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -42,8 +47,15 @@ export function useConsistency(): {
       return;
     }
 
+    const params = new URLSearchParams();
+    if (dateRange?.from) params.set("from", format(dateRange.from, "yyyy-MM-dd"));
+    if (dateRange?.to) params.set("to", format(dateRange.to, "yyyy-MM-dd"));
+    const url = params.toString()
+      ? `${ANALYTICS_BASE_URL}?${params.toString()}`
+      : ANALYTICS_BASE_URL;
+
     try {
-      const response = await fetch(CONSISTENCY_URL, {
+      const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -56,8 +68,8 @@ export function useConsistency(): {
           status: response.status,
         });
       }
-      const result: Consistency = await response.json();
-      setConsistency(result);
+      const result: ShootingAnalyticsResponse = await response.json();
+      setAnalytics(result);
     } catch (err: unknown) {
       const error = err as FetchError;
       if (error.name !== "AbortError") {
@@ -71,12 +83,12 @@ export function useConsistency(): {
         setIsLoading(false);
       }
     }
-  }, [CONSISTENCY_URL, getToken]);
+  }, [ANALYTICS_BASE_URL, getToken, dateRange]);
 
   useEffect(() => {
-    fetchConsistency();
+    fetchAnalytics();
     return () => abortRef.current?.abort();
-  }, [fetchConsistency, getToken]);
+  }, [fetchAnalytics, getToken]);
 
-  return { consistency, isLoading, error, refetch: fetchConsistency };
+  return { analytics, isLoading, error, dateRange, setDateRange, refetch: fetchAnalytics };
 }

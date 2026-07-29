@@ -5,7 +5,7 @@ using Scalar.AspNetCore;
 using Backend.Data;
 using Backend.Common.Endpoints;
 using Backend.Common.Services;
-using backend.Features.Analytics;
+using backend.Features.Analytics.Consistency;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +30,7 @@ builder.Services.AddOpenApi();
 
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
-    .Get<string[]>() ?? Array.Empty<string>();
+    .Get<string[]>() ?? [];
 
 builder.Services.AddCors(options =>
 {

@@ -4,7 +4,7 @@ using Backend.Common.Services;
 using Backend.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace backend.Features.Analytics;
+namespace backend.Features.Analytics.Consistency;
 
 public static class GetConsistency
 {
