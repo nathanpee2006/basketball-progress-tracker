@@ -6,7 +6,6 @@ using Backend.Data;
 using Backend.Common.Endpoints;
 using Backend.Common.Services;
 using backend.Features.Analytics.Consistency;
-using backend.Features.Analytics.ShootingAnalytics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +51,6 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IConsistencyService, ConsistencyService>();
-builder.Services.AddScoped<IShootingAnalyticsService, ShootingAnalyticsService>();
 
 var app = builder.Build();
 
