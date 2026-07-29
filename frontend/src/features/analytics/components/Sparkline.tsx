@@ -20,7 +20,11 @@ interface SparklineProps {
 // Renders a simple line + dot sparkline. Points are the source of truth for the
 // hover tooltip, so callers should pass a human-readable `label` per point rather
 // than relying on this component to reformat raw numbers.
-export function Sparkline({ points, width = 280, height = 64 }: SparklineProps) {
+export function Sparkline({
+  points,
+  width = 280,
+  height = 64,
+}: SparklineProps) {
   if (points.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">Not enough data yet.</p>
@@ -45,7 +49,7 @@ export function Sparkline({ points, width = 280, height = 64 }: SparklineProps) 
     .join(" ");
 
   return (
-    <TooltipProvider delayDuration={100}>
+    <TooltipProvider delay={100}>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         width="100%"
@@ -62,14 +66,16 @@ export function Sparkline({ points, width = 280, height = 64 }: SparklineProps) 
         />
         {points.map((p, i) => (
           <Tooltip key={`${p.date}-${i}`}>
-            <TooltipTrigger asChild>
-              <circle
-                cx={toX(i)}
-                cy={toY(p.value)}
-                r={4}
-                className="fill-primary cursor-pointer"
-              />
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <circle
+                  cx={toX(i)}
+                  cy={toY(p.value)}
+                  r={4}
+                  className="fill-primary cursor-pointer"
+                />
+              }
+            />
             <TooltipContent>
               <p className="text-xs font-medium">{p.date}</p>
               <p className="text-xs text-muted-foreground">
