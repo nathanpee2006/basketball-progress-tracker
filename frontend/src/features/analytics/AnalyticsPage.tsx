@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnalyticsSkeleton } from "./components/AnalyticsSkeleton";
 import { EmptyAnalytics } from "./components/EmptyAnalytics";
@@ -8,12 +7,7 @@ import { ZoneVolumeCard } from "./components/ZoneVolumeCard";
 import { Sparkline } from "./components/Sparkline";
 import { DateRangePicker } from "./components/DateRangePicker";
 import { useShootingAnalytics } from "./useShootingAnalytics";
-
-const ZONE_LABELS: Record<string, string> = {
-  paint: "Paint",
-  midrange: "Midrange",
-  threePoint: "Three Point",
-};
+import { ZONE_LABELS } from "./types/analytics";
 
 export function AnalyticsPage() {
   const { analytics, isLoading, error, dateRange, setDateRange } = useShootingAnalytics();

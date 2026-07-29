@@ -34,3 +34,9 @@ export interface DateRangeParams {
   from?: string; // "yyyy-MM-dd"
   to?: string;
 }
+
+export const ZONE_LABELS: Record<string, string> = {
+  paint: "Paint",
+  midrange: "Midrange",
+  threePoint: "Three Point",
+};

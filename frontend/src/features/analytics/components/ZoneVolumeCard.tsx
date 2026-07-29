@@ -1,12 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { AnalyticsZoneStat } from "../types/analytics";
+import { ZONE_LABELS, type AnalyticsZoneStat } from "../types/analytics";
 import { Progress } from "@/components/ui/progress";
-
-const ZONE_LABELS: Record<string, string> = {
-  paint: "Paint",
-  midrange: "Midrange",
-  threePoint: "Three Point",
-};
 
 interface ZoneVolumeCardProps {
   zones: AnalyticsZoneStat[];
