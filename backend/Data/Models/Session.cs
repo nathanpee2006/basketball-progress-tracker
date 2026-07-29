@@ -25,5 +25,10 @@ namespace Backend.Data.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         public ICollection<Drill> Drills { get; set; } = new List<Drill>();
+
+        public static int CalculateZoneShotPercentage(int makes, int attempts)
+        {
+            return (attempts == 0) ? 0 : (int)Math.Round((double)makes / attempts * 100);
+        }
     }
 }
