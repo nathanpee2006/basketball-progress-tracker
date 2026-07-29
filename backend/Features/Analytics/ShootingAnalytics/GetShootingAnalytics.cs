@@ -151,7 +151,6 @@ public class GetShootingAnalytics
             return string.Empty;
 
         return shootingByZone 
-            .Where(z => z.Attempts > 5)
             .OrderBy(z => z.Percentage)
             .ThenByDescending(z => z.Attempts) // tie-break: prefer the zone with more data
             .First()
