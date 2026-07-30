@@ -66,14 +66,28 @@ public static class ClerkWebhook
             return Results.BadRequest();
         }
 
+        var firstName = data.GetProperty("first_name").GetString();
+        var lastName = data.GetProperty("last_name").GetString();
+
+        var emailAddresses = data.GetProperty("email_addresses").EnumerateArray();
+        var primaryEmailAddressId = data.GetProperty("primary_email_address_id").GetString();
+        var primaryEmail = emailAddresses.FirstOrDefault(e => e.GetProperty("id").GetString() == primaryEmailAddressId)
+            .GetProperty("email_address").GetString(); 
+
+        var imageUrl = data.GetProperty("image_url").GetString();
+
         var timeZone = ResolveTimeZone(data);
 
-        var exists = await dbContext.Players.AnyAsync(p => p.ClerkUserId == clerkUserId, cancellationToken);
+        var exists = await dbContext.Players.AnyAsync(p => p.ClerkUserId == clerkUserId && p.Email == primaryEmail, cancellationToken);
         if (!exists)
         {
             var player = new Player
             {
                 ClerkUserId = clerkUserId,
+                FirstName = firstName,
+                LastName = lastName,
+                Email = primaryEmail,
+                ImageUrl = imageUrl,
                 TimeZone = timeZone,
                 CreatedAt = DateTime.UtcNow
             };
