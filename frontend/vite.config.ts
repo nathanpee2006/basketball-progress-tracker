@@ -6,7 +6,14 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), visualizer() as PluginOption],
+  plugins: [
+    react(), 
+    tailwindcss(), 
+    {
+      ...visualizer(),
+      apply: "build",
+    } as PluginOption
+  ],
   server: {
     watch: {
       usePolling: true,
