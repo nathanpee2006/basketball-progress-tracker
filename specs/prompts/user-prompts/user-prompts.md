@@ -30,3 +30,10 @@ Implement test cases for the GetSessionEndpoint. Give suggestions as well for ot
     5. 200 when session exists for the given session id with expected data and drill responses
 
 Justify why a useCallback function is necessary for deleting a session. From my understanding useCallback is used to return a function back to me on initial render. React will then check that when the array of dependencies change it will provide me a new function. Why would I need a new function when I only need one function to delete a session?
+
+https://clerk.com/docs/guides/development/webhooks/syncing
+Within my application, I want to have a leaderboard that requires the name of the user. My approach is to retrieve the username and email from the webhook request's data and store it in the database. I was wondering if there are any different approaches and their tradeoffs? Also give your recommendation.
+
+I am considering whether I should include the rank in the API response or do I set the ranks of each entry in the frontend. What are tradeoffs of these two approaches? Also let me know the implications of both.
+
+@backend/Features/Leaderboard/GetLeaderBoard.cs @frontend/src/features/leaderboard/LeaderboardPage.tsx Create a hook similar to @frontend/src/features/analytics/useShootingAnalytics.tsx that will return @frontend/src/features/leaderboard/types/leaderboard-entry.ts data. It also have the loading and error states. 

@@ -51,13 +51,15 @@ public class DeleteSessionTests(ApiFixture api) : IClassFixture<ApiFixture>, IAs
     public async Task Returns_not_found_when_session_belongs_to_another_player()
     {
         const string ownerClerkUserId = "clerk_owner";
+        const string ownerEmail = "clerk_owner@email.com";
         const string requesterClerkUserId = "clerk_requester";
+        const string requesterEmail = "clerk_requester@email.com";
 
         using var scope = api.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var owner = new Player { ClerkUserId = ownerClerkUserId };
-        var requester = new Player { ClerkUserId = requesterClerkUserId };
+        var owner = new Player { ClerkUserId = ownerClerkUserId, Email = ownerEmail };
+        var requester = new Player { ClerkUserId = requesterClerkUserId, Email = requesterEmail };
         db.Players.AddRange(owner, requester);
         await db.SaveChangesAsync();
 

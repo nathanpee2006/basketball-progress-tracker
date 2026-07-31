@@ -22,6 +22,10 @@ namespace Backend.Data
                 .HasIndex(p => p.ClerkUserId)
                 .IsUnique();
 
+            modelBuilder.Entity<Player>()
+                .HasIndex(p => p.Email)
+                .IsUnique();
+
             modelBuilder.Entity<Session>()
                 .HasIndex(s => new { s.PlayerId, s.Date });
         }

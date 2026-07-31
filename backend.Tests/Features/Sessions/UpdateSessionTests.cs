@@ -202,13 +202,15 @@ public class UpdateSessionTests(ApiFixture api) : IClassFixture<ApiFixture>, IAs
     public async Task Returns_not_found_when_session_belongs_to_different_player()
     {
         const string ownerClerkId = "clerk_owner";
+        const string ownerEmail = "clerk_owner@email.com";
         const string attackerClerkId = "clerk_attacker";
+        const string attackerEmail = "clerk_attacker@email.com";
 
         using var scope = api.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var owner = new Player { ClerkUserId = ownerClerkId };
-        var attacker = new Player { ClerkUserId = attackerClerkId };
+        var owner = new Player { ClerkUserId = ownerClerkId, Email = ownerEmail };
+        var attacker = new Player { ClerkUserId = attackerClerkId, Email = attackerEmail };
         db.Players.AddRange(owner, attacker);
         await db.SaveChangesAsync();
 
