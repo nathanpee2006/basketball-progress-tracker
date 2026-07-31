@@ -141,8 +141,8 @@ public class GetSessionsTests(ApiFixture api) : IClassFixture<ApiFixture>, IAsyn
         using var scope = api.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var player = new Player { ClerkUserId = clerkUserId };
-        var otherPlayer = new Player { ClerkUserId = otherClerkUserId };
+        var player = new Player { ClerkUserId = clerkUserId, Email = "clerk_user_3@email.com" };
+        var otherPlayer = new Player { ClerkUserId = otherClerkUserId, Email = "clerk_user_4@email.com" };
         db.Players.AddRange(player, otherPlayer);
         await db.SaveChangesAsync();
 
