@@ -1,11 +1,12 @@
 using System.Security.Claims;
 using Backend.Common.Endpoints;
 using Backend.Data;
+using Backend.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Features.Leaderboard;
 
-public static class GetLeaderBoard
+public static class GetLeaderboard
 {
     public record LeaderboardEntry(
         int PlayerId,
@@ -69,7 +70,7 @@ public static class GetLeaderBoard
                             r.PlayerId,
                             r.PlayerName,
                             r.ImageUrl,
-                            ShotPercentage = (int)Math.Round((double)r.TotalPaintMakes / r.TotalPaintAttempts * 100),
+                            ShotPercentage = Session.CalculateZoneShotPercentage(r.TotalPaintMakes, r.TotalPaintAttempts),
                             IsQualified = r.TotalPaintAttempts >= 20
                         })
                         .OrderByDescending(r => r.IsQualified)
@@ -110,8 +111,7 @@ public static class GetLeaderBoard
                             r.PlayerId,
                             r.PlayerName,
                             r.ImageUrl,
-                            ShotPercentage =
-                                (int)Math.Round((double)r.TotalMidrangeMakes / r.TotalMidrangeAttempts * 100),
+                            ShotPercentage = Session.CalculateZoneShotPercentage(r.TotalMidrangeMakes, r.TotalMidrangeAttempts),
                             IsQualified = r.TotalMidrangeAttempts >= 20
                         })
                         .OrderByDescending(r => r.IsQualified)
@@ -151,8 +151,7 @@ public static class GetLeaderBoard
                             r.PlayerId,
                             r.PlayerName,
                             r.ImageUrl,
-                            ShotPercentage =
-                                (int)Math.Round((double)r.TotalThreePointMakes / r.TotalThreePointAttempts * 100),
+                            ShotPercentage = Session.CalculateZoneShotPercentage(r.TotalThreePointMakes, r.TotalThreePointAttempts),
                             IsQualified = r.TotalThreePointAttempts >= 20
                         })
                         .OrderByDescending(r => r.IsQualified)
@@ -193,8 +192,7 @@ public static class GetLeaderBoard
                             r.PlayerId,
                             r.PlayerName,
                             r.ImageUrl,
-                            ShotPercentage =
-                                (int)Math.Round((double)r.TotalFreeThrowMakes / r.TotalFreeThrowAttempts * 100),
+                            ShotPercentage = Session.CalculateZoneShotPercentage(r.TotalFreeThrowMakes, r.TotalFreeThrowAttempts), 
                             IsQualified = r.TotalFreeThrowAttempts >= 20
                         })
                         .OrderByDescending(r => r.IsQualified)
@@ -245,11 +243,11 @@ public static class GetLeaderBoard
                 r.PlayerId,
                 r.PlayerName,
                 r.ImageUrl,
-                ShotPercentage = (int)Math.Round((double)(r.TotalPaintMakes + r.TotalMidrangeMakes +
+                ShotPercentage = r.TotalPaintAttempts + r.TotalMidrangeAttempts + r.TotalThreePointAttempts + r.TotalFreeThrowAttempts != 0 ? (int)Math.Round((double)(r.TotalPaintMakes + r.TotalMidrangeMakes +
                                                           r.TotalThreePointMakes +
                                                           r.TotalFreeThrowMakes) /
                     (r.TotalPaintAttempts + r.TotalMidrangeAttempts +
-                     r.TotalThreePointAttempts + r.TotalFreeThrowAttempts) * 100),
+                     r.TotalThreePointAttempts + r.TotalFreeThrowAttempts) * 100) : 0,
                 IsQualified = (r.TotalPaintAttempts + r.TotalMidrangeAttempts + r.TotalThreePointAttempts +
                                r.TotalFreeThrowAttempts) >= 20
             })
