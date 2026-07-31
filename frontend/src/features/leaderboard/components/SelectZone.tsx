@@ -24,7 +24,7 @@ export function SelectZone({
   return (
     <Select items={items} onValueChange={(value) => setZone(value as ZoneId | null)}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Theme" />
+        <SelectValue placeholder="Overall" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
