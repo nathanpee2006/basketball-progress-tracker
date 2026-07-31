@@ -1,11 +1,19 @@
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import react from "@vitejs/plugin-react";
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(), 
+    tailwindcss(), 
+    {
+      ...visualizer(),
+      apply: "build",
+    } as PluginOption
+  ],
   server: {
     watch: {
       usePolling: true,

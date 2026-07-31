@@ -3,6 +3,7 @@ import { BarChart3, House, NotebookPen, Podium } from "lucide-react";
 import { NavLink, Outlet } from "react-router";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 const tabs = [
   { to: "/", label: "Dashboard", icon: House },
@@ -16,7 +17,7 @@ export function AppLayout() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-20 border-b border-border bg-background/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between">
-          <h1 className="text-lg font-semibold">Basketball Progress Tracker</h1>
+          <ModeToggle />
           <UserButton />
         </div>
       </header>
