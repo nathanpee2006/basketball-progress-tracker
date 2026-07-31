@@ -2,7 +2,6 @@ import * as React from "react"
 import {
   ChevronLeft,
   ChevronRight,
-  CircleEllipsisIcon,
   Crown,
   EllipsisIcon,
   TrendingDown,
