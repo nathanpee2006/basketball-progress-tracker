@@ -213,7 +213,7 @@ public static class GetLeaderboard
                     return TypedResults.Ok(freeThrowRankedWeeklyShotPercentage);
 
                 default:
-                    return TypedResults.BadRequest("Invalid zone parameter.");
+                    return TypedResults.BadRequest(new { message = "Invalid zone parameter. Valid values are: paint, midrange, threepoint, freethrow." });
             }
         }
 
