@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Features.Analytics.ShootingAnalytics;
 
-public class GetShootingAnalytics
+public static class GetShootingAnalytics
 {
     public record ZoneStat(string Zone, int Attempts, int Makes, int Percentage);
 
