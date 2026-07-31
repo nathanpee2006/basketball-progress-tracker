@@ -6,6 +6,7 @@ import { DashboardPage } from "@/features/dashboard/DashboardPage";
 import { SessionDetailPage } from "@/features/sessions-detail/SessionDetailPage";
 import { SessionFormPage } from "@/features/create-edit-session-form/SessionFormPage";
 import { SessionsPage } from "@/features/sessions-list/SessionsPage";
+import { LeaderboardPage } from "@/features/leaderboard/LeaderboardPage";
 
 function UnauthenticatedScreen() {
   const unsafeMetadata : SignUpUnsafeMetadata = {
@@ -48,6 +49,7 @@ function App() {
         <Route path="sessions/:id" element={<SessionDetailPage />} />
         <Route path="sessions/:id/edit" element={<SessionFormPage mode="edit" />} />
         <Route path="analytics" element={<AnalyticsPage />} />
+        <Route path="leaderboard" element={<LeaderboardPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

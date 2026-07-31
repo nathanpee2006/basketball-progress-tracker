@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/react";
-import { BarChart3, House, NotebookPen } from "lucide-react";
+import { BarChart3, House, NotebookPen, Podium } from "lucide-react";
 import { NavLink, Outlet } from "react-router";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
@@ -8,6 +8,7 @@ const tabs = [
   { to: "/", label: "Dashboard", icon: House },
   { to: "/sessions", label: "Sessions", icon: NotebookPen },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/leaderboard", label: "Leaderboard", icon: Podium },
 ] as const;
 
 export function AppLayout() {
@@ -26,7 +27,7 @@ export function AppLayout() {
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto grid w-full max-w-3xl grid-cols-3">
+        <div className="mx-auto grid w-full max-w-3xl grid-cols-4">
           {tabs.map((tab) => (
             <NavLink
               key={tab.to}
