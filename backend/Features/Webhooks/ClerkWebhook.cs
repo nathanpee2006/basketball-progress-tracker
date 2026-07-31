@@ -35,13 +35,15 @@ public static class ClerkWebhook
         if (string.IsNullOrEmpty(rawBody))
             return Results.BadRequest();
 
-        var signingSecret = configuration["Clerk:WebhookSigningSecret"] ?? throw new InvalidOperationException("Clerk webhook signing secret is not configured.");
+        var signingSecret = configuration["Clerk:WebhookSigningSecret"] ??
+                            throw new InvalidOperationException("Clerk webhook signing secret is not configured.");
         try
         {
             var webhook = new Webhook(signingSecret);
             webhook.Verify(
                 rawBody.AsSpan(),
-                headerName => headerName is not null && httpContext.Request.Headers.TryGetValue(headerName, out var value)
+                headerName => headerName is not null &&
+                              httpContext.Request.Headers.TryGetValue(headerName, out var value)
                     ? value.ToString()
                     : null);
         }
@@ -70,15 +72,28 @@ public static class ClerkWebhook
         var lastName = data.GetProperty("last_name").GetString();
 
         var emailAddresses = data.GetProperty("email_addresses").EnumerateArray();
-        var primaryEmailAddressId = data.GetProperty("primary_email_address_id").GetString();
-        var primaryEmail = emailAddresses.FirstOrDefault(e => e.GetProperty("id").GetString() == primaryEmailAddressId)
-            .GetProperty("email_address").GetString(); 
+        var primaryEmailIdProp = data.GetProperty("primary_email_address_id");
+        if (primaryEmailIdProp.ValueKind != JsonValueKind.String)
+        {
+            return Results.BadRequest();
+        }
+        var primaryEmailAddressId = primaryEmailIdProp.GetString();
+        var primaryEmailEntry = emailAddresses.FirstOrDefault(e =>
+            e.TryGetProperty("id", out var idProp) && idProp.GetString() == primaryEmailAddressId);
+        if (primaryEmailEntry.ValueKind != JsonValueKind.Object ||
+            !primaryEmailEntry.TryGetProperty("email_address", out var emailProp) ||
+            emailProp.ValueKind != JsonValueKind.String)
+        {
+            return Results.BadRequest();
+        }
+        var primaryEmail = emailProp.GetString();
 
         var imageUrl = data.GetProperty("image_url").GetString();
 
         var timeZone = ResolveTimeZone(data);
 
-        var exists = await dbContext.Players.AnyAsync(p => p.ClerkUserId == clerkUserId && p.Email == primaryEmail, cancellationToken);
+        var exists = await dbContext.Players.AnyAsync(p => p.ClerkUserId == clerkUserId && p.Email == primaryEmail,
+            cancellationToken);
         if (!exists)
         {
             var player = new Player
@@ -96,7 +111,7 @@ public static class ClerkWebhook
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        return TypedResults.Ok(); 
+        return TypedResults.Ok();
     }
 
     private static string ResolveTimeZone(JsonElement data)
