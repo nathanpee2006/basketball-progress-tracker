@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useConsistency } from "./useConsistency";
 import { useSessions } from "../sessions-list/useSessions";
 import { WeeklyStreakHero } from "./components/WeeklyStreakHero";
@@ -9,23 +9,35 @@ import { SessionsEmptyState } from "../../components/session/SessionsEmptyState"
 import { SessionsList } from "@/components/session/SessionsList";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { AchievementGrid } from "../achievements/components/achievement-grid";
+import { useAchievements } from "../achievements/useAchievements";
 
-const RECENT_SESSIONS_LIMIT = 5;
+const RECENT_SESSIONS_LIMIT = 2;
 
 export function DashboardPage() {
   const navigate = useNavigate();
-  const { consistency, isLoading: isConsistencyLoading, error: ConsistencyError } = useConsistency();
+  const {
+    consistency,
+    isLoading: isConsistencyLoading,
+    error: ConsistencyError,
+  } = useConsistency();
   const {
     sessions,
     isLoading: isSessionsLoading,
     error: SessionError,
     deleteSession,
   } = useSessions();
+  const {
+    achievements,
+    isLoading: isAchievementsLoading,
+    error: AchievementError,
+  } = useAchievements();
 
   useEffect(() => {
     if (SessionError) toast.error(SessionError.message);
     if (ConsistencyError) toast.error(ConsistencyError.message);
-  }, [SessionError, ConsistencyError]);
+    if (AchievementError) toast.error(AchievementError.message);
+  }, [SessionError, ConsistencyError, AchievementError]);
 
   const recentSessions = (sessions ?? []).slice(0, RECENT_SESSIONS_LIMIT);
 
@@ -36,17 +48,25 @@ export function DashboardPage() {
       await deleteSession(id);
       toast.success("Session deleted successfully");
     } catch {
-      toast.error("Failed to delete session"); 
+      toast.error("Failed to delete session");
     }
   };
   const handleCreate = () => navigate("/sessions/new");
+
+  const achieved = (achievements ?? []).filter((a) => a.achievedAt !== null);
+  const unachieved = (achievements ?? []).filter((a) => a.achievedAt === null);
+  const recentAchievements = [
+    ...achieved.slice(0, 2),
+    ...unachieved.slice(0, 4 - Math.min(achieved.length, 2)),
+  ];
 
   return (
     <section className="space-y-6">
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">Dashboard</h2>
         <p className="text-sm text-muted-foreground">
-          Overview for streaks, recent sessions, and quick actions.
+          Overview for streaks, achievements, recent sessions, and quick
+          actions.
         </p>
       </div>
 
@@ -55,7 +75,16 @@ export function DashboardPage() {
         isLoading={isConsistencyLoading}
       />
 
-      <LogSessionButton onClick={handleCreate} />
+      <div className="flex items-center justify-between gap-4">
+        <LogSessionButton onClick={handleCreate} />
+        <Link to="/achievements">View All</Link>
+      </div>
+
+      {!isAchievementsLoading &&
+        !AchievementError &&
+        recentAchievements.length > 0 && (
+          <AchievementGrid achievements={recentAchievements} columns={4} />
+        )}
 
       <QuickAnalyticsSnapshot
         consistency={consistency}
