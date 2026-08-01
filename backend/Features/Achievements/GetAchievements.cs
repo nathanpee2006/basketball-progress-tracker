@@ -10,7 +10,7 @@ namespace backend.Features.Achievements;
 public static class GetAchievements
 {
     public record Achievement(
-        string Key,
+        int Id,
         string Name,
         string Description,
         string Trigger,
@@ -88,7 +88,7 @@ public static class GetAchievements
                     ? 0
                     : Math.Min(100, (int)Math.Round((double)currentValue / a.Threshold * 100));
 
-            return new Achievement(a.Key, a.Name, a.Description, a.Trigger, achievedAt, progress);
+            return new Achievement(a.Id, a.Name, a.Description, a.Trigger, achievedAt, progress);
         }).ToList();
 
         return TypedResults.Ok(response);
