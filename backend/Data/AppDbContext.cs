@@ -30,6 +30,22 @@ namespace Backend.Data
 
             modelBuilder.Entity<Session>()
                 .HasIndex(s => new { s.PlayerId, s.Date });
+
+            modelBuilder.Entity<PlayerAchievement>()
+                .HasIndex(pa => new { pa.PlayerId, pa.AchievementId })
+                .IsUnique();
+
+            modelBuilder.Entity<PlayerAchievement>()
+                .HasOne<Player>()
+                .WithMany()
+                .HasForeignKey(pa => pa.PlayerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PlayerAchievement>()
+                .HasOne<Achievement>()
+                .WithMany()
+                .HasForeignKey(pa => pa.AchievementId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
