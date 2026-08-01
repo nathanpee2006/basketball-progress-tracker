@@ -53,7 +53,12 @@ export function DashboardPage() {
   };
   const handleCreate = () => navigate("/sessions/new");
 
-  const achieved = (achievements ?? []).filter((a) => a.achievedAt !== null);
+  const achieved = (achievements ?? [])
+    .filter((a) => a.achievedAt !== null)
+    .sort(
+      (a, b) =>
+        new Date(b.achievedAt!).getTime() - new Date(a.achievedAt!).getTime(),
+    );
   const unachieved = (achievements ?? []).filter((a) => a.achievedAt === null);
   const recentAchievements = [
     ...achieved.slice(0, 2),
