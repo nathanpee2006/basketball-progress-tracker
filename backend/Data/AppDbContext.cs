@@ -31,6 +31,10 @@ namespace Backend.Data
             modelBuilder.Entity<Session>()
                 .HasIndex(s => new { s.PlayerId, s.Date });
 
+            modelBuilder.Entity<Achievement>()
+                .HasIndex(a => a.Key)
+                .IsUnique();
+
             modelBuilder.Entity<PlayerAchievement>()
                 .HasIndex(pa => new { pa.PlayerId, pa.AchievementId })
                 .IsUnique();
