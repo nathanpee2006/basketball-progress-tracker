@@ -138,7 +138,14 @@ public static class CreateSession
         context.Sessions.Add(session);
         await context.SaveChangesAsync(cancellationToken);
 
-        await UnlockAchievementsAsync(context, player.Id, cancellationToken);
+        try
+        {
+            await UnlockAchievementsAsync(context, player.Id, cancellationToken);
+        }
+        catch (Exception)
+        {
+            return TypedResults.InternalServerError(new { message = "An error occurred while unlocking achievements. Please try again later." });
+        }
 
         var overallMakes = session.PaintMakes + session.MidrangeMakes + session.ThreePointMakes +
                            session.FreeThrowMakes;
