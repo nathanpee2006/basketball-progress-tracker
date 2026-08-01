@@ -1,3 +1,4 @@
+using backend;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,8 @@ using Backend.Common.Services;
 using backend.Features.Analytics.Consistency;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -53,6 +56,13 @@ builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IConsistencyService, ConsistencyService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+    await AchievementSeeder.SeedAsync(context);
+}
 
 app.MapOpenApi();
 app.MapScalarApiReference();
