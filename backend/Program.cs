@@ -1,3 +1,4 @@
+using backend;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,14 @@ builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IConsistencyService, ConsistencyService>();
 
 var app = builder.Build();
+
+// Any transient DB unavailability during startup becomes a hard crash with no retry, rather than a controlled failure
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+    await AchievementSeeder.SeedAsync(context);
+}
 
 app.MapOpenApi();
 app.MapScalarApiReference();

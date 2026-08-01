@@ -12,6 +12,8 @@ namespace Backend.Data
         public DbSet<Player> Players { get; set; } = null!;
         public DbSet<Session> Sessions { get; set; } = null!;
         public DbSet<Drill> Drills { get; set; } = null!;
+        public DbSet<Achievement> Achievements { get; set; } = null!;
+        public DbSet<PlayerAchievement> PlayerAchievements { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +30,26 @@ namespace Backend.Data
 
             modelBuilder.Entity<Session>()
                 .HasIndex(s => new { s.PlayerId, s.Date });
+
+            modelBuilder.Entity<Achievement>()
+                .HasIndex(a => a.Key)
+                .IsUnique();
+
+            modelBuilder.Entity<PlayerAchievement>()
+                .HasIndex(pa => new { pa.PlayerId, pa.AchievementId })
+                .IsUnique();
+
+            modelBuilder.Entity<PlayerAchievement>()
+                .HasOne<Player>()
+                .WithMany()
+                .HasForeignKey(pa => pa.PlayerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PlayerAchievement>()
+                .HasOne<Achievement>()
+                .WithMany()
+                .HasForeignKey(pa => pa.AchievementId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
