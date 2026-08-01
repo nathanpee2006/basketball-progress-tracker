@@ -3,24 +3,26 @@ using Backend.Common.Endpoints;
 using Backend.Common.Services;
 using Backend.Data;
 using Backend.Data.Models;
+using backend.Features.Common;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Features.Sessions;
 
 public static class CreateSession
 {
     public record Request(
-       DateOnly Date,
-       int PaintMakes,
-       int PaintAttempts,
-       int MidrangeMakes,
-       int MidrangeAttempts,
-       int ThreePointMakes,
-       int ThreePointAttempts,
-       int FreeThrowMakes,
-       int FreeThrowAttempts,
-       List<DrillRequest> Drills
-   );
+        DateOnly Date,
+        int PaintMakes,
+        int PaintAttempts,
+        int MidrangeMakes,
+        int MidrangeAttempts,
+        int ThreePointMakes,
+        int ThreePointAttempts,
+        int FreeThrowMakes,
+        int FreeThrowAttempts,
+        List<DrillRequest> Drills
+    );
 
     public record Response(
         int Id,
@@ -44,13 +46,16 @@ public static class CreateSession
     );
 
     public record DrillRequest(string Name, int CompletionTimeInSeconds);
+
     public record DrillResponse(int Id, string Name, int CompletionTimeInSeconds);
 
     public sealed class Validator : AbstractValidator<Request>
     {
         public Validator()
         {
-            RuleFor(r => r.Date).NotEmpty().LessThan(DateOnly.FromDateTime(DateTime.Today.AddDays(1))); // Note: exception gets thrown when date is empty string
+            RuleFor(r => r.Date).NotEmpty()
+                .LessThan(DateOnly.FromDateTime(DateTime.Today
+                    .AddDays(1))); // Note: exception gets thrown when date is empty string
             RuleFor(r => r.PaintMakes).GreaterThanOrEqualTo(0).LessThanOrEqualTo(r => r.PaintAttempts);
             RuleFor(r => r.PaintAttempts).GreaterThanOrEqualTo(0);
             RuleFor(r => r.MidrangeMakes).GreaterThanOrEqualTo(0).LessThanOrEqualTo(r => r.MidrangeAttempts);
@@ -87,7 +92,8 @@ public static class CreateSession
         }
     }
 
-    public static async Task<IResult> Handler(Request request, AppDbContext context, IPlayerService playerService, ClaimsPrincipal user, IValidator<Request> validator)
+    public static async Task<IResult> Handler(Request request, AppDbContext context, IPlayerService playerService,
+        ClaimsPrincipal user, IValidator<Request> validator, CancellationToken cancellationToken)
     {
         var clerkUserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         if (clerkUserId is null)
@@ -119,18 +125,25 @@ public static class CreateSession
             ThreePointAttempts = request.ThreePointAttempts,
             FreeThrowMakes = request.FreeThrowMakes,
             FreeThrowAttempts = request.FreeThrowAttempts,
-            Drills = [.. request.Drills.Select(d => new Drill
-            {
-                Name = d.Name,
-                CompletionTimeInSeconds = d.CompletionTimeInSeconds
-            })]
+            Drills =
+            [
+                .. request.Drills.Select(d => new Drill
+                {
+                    Name = d.Name,
+                    CompletionTimeInSeconds = d.CompletionTimeInSeconds
+                })
+            ]
         };
 
         context.Sessions.Add(session);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
 
-        var overallMakes = session.PaintMakes + session.MidrangeMakes + session.ThreePointMakes + session.FreeThrowMakes;
-        var overallAttempts = session.PaintAttempts + session.MidrangeAttempts + session.ThreePointAttempts + session.FreeThrowAttempts;
+        await UnlockAchievementsAsync(context, player.Id, cancellationToken);
+
+        var overallMakes = session.PaintMakes + session.MidrangeMakes + session.ThreePointMakes +
+                           session.FreeThrowMakes;
+        var overallAttempts = session.PaintAttempts + session.MidrangeAttempts + session.ThreePointAttempts +
+                              session.FreeThrowAttempts;
 
         return TypedResults.Created($"/api/sessions/{session.Id}", new Response(
             session.Id,
@@ -145,14 +158,71 @@ public static class CreateSession
             session.FreeThrowAttempts,
             overallMakes,
             overallAttempts,
-            PaintShotPercentage: session.PaintAttempts != 0 ? (int)Math.Round((double)session.PaintMakes / session.PaintAttempts * 100) : 0,
-            MidrangeShotPercentage: session.MidrangeAttempts != 0 ? (int)Math.Round((double)session.MidrangeMakes / session.MidrangeAttempts * 100) : 0,
-            ThreePointShotPercentage: session.ThreePointAttempts != 0 ? (int)Math.Round((double)session.ThreePointMakes / session.ThreePointAttempts * 100) : 0,
-            FreeThrowShotPercentage: session.FreeThrowAttempts != 0 ? (int)Math.Round((double)session.FreeThrowMakes / session.FreeThrowAttempts * 100) : 0,
-            OverallShotPercentage: (session.PaintAttempts + session.MidrangeAttempts + session.ThreePointAttempts + session.FreeThrowAttempts) != 0
-                ? (int)Math.Round((double)(session.PaintMakes + session.MidrangeMakes + session.ThreePointMakes + session.FreeThrowMakes) / (session.PaintAttempts + session.MidrangeAttempts + session.ThreePointAttempts + session.FreeThrowAttempts) * 100)
+            PaintShotPercentage: session.PaintAttempts != 0
+                ? (int)Math.Round((double)session.PaintMakes / session.PaintAttempts * 100)
+                : 0,
+            MidrangeShotPercentage: session.MidrangeAttempts != 0
+                ? (int)Math.Round((double)session.MidrangeMakes / session.MidrangeAttempts * 100)
+                : 0,
+            ThreePointShotPercentage: session.ThreePointAttempts != 0
+                ? (int)Math.Round((double)session.ThreePointMakes / session.ThreePointAttempts * 100)
+                : 0,
+            FreeThrowShotPercentage: session.FreeThrowAttempts != 0
+                ? (int)Math.Round((double)session.FreeThrowMakes / session.FreeThrowAttempts * 100)
+                : 0,
+            OverallShotPercentage: (session.PaintAttempts + session.MidrangeAttempts + session.ThreePointAttempts +
+                                    session.FreeThrowAttempts) != 0
+                ? (int)Math.Round(
+                    (double)(session.PaintMakes + session.MidrangeMakes + session.ThreePointMakes +
+                             session.FreeThrowMakes) /
+                    (session.PaintAttempts + session.MidrangeAttempts + session.ThreePointAttempts +
+                     session.FreeThrowAttempts) * 100)
                 : 0,
             [.. session.Drills.Select(d => new DrillResponse(d.Id, d.Name, d.CompletionTimeInSeconds))]
         ));
+    }
+
+    private static async Task UnlockAchievementsAsync(AppDbContext context, int playerId,
+        CancellationToken cancellationToken)
+    {
+        var alreadyUnlockedIds = await context.PlayerAchievements
+            .Where(pa => pa.PlayerId == playerId)
+            .Select(pa => pa.AchievementId)
+            .ToListAsync(cancellationToken);
+
+        var definitions = await context.Achievements
+            .Where(a => !alreadyUnlockedIds.Contains(a.Id))
+            .ToListAsync(cancellationToken);
+
+        if (definitions.Count == 0) return; 
+
+        var totals = await context.Sessions
+            .Where(s => s.PlayerId == playerId)
+            .GroupBy(s => 1)
+            .Select(g => new AchievementLogic.SessionTotals(
+                g.Sum(s => s.PaintMakes),
+                g.Sum(s => s.MidrangeMakes),
+                g.Sum(s => s.ThreePointMakes),
+                g.Sum(s => s.FreeThrowMakes),
+                g.Count()
+            ))
+            .FirstAsync(cancellationToken); 
+
+        var bestSingleSessionTotal = await context.Sessions
+            .Where(s => s.PlayerId == playerId)
+            .Select(s => s.PaintMakes + s.MidrangeMakes + s.ThreePointMakes + s.FreeThrowMakes)
+            .MaxAsync(cancellationToken);
+
+        var newlyUnlocked = definitions
+            .Where(def => AchievementLogic.GetCurrentValue(def.Key, totals, bestSingleSessionTotal) >= def.Threshold)
+            .Select(def => new PlayerAchievement
+            {
+                PlayerId = playerId,
+                AchievementId = def.Id,
+                AchievedAt = DateTime.UtcNow
+            });
+
+        context.PlayerAchievements.AddRange(newlyUnlocked);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
