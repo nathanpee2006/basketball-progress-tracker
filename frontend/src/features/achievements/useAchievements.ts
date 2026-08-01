@@ -3,6 +3,7 @@ import { useAuth } from "@clerk/react";
 import type { FetchError } from "@/types/fetchError";
 import type { UserAchievement } from "./types/achievement";
 
+// consider using a generic reusable fetch hook like useApiResource<T>(url)
 export function useAchievements(): {
   achievements: UserAchievement[];
   isLoading: boolean;
@@ -16,7 +17,7 @@ export function useAchievements(): {
 
   const  ACHIEVEMENTS_URL= import.meta.env.VITE_API_URL + "/achievements";
 
-  const fetchSessions = useCallback(async () => {
+  const fetchAchievements = useCallback(async () => {
     // Abort any in-flight request
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
@@ -71,9 +72,9 @@ export function useAchievements(): {
 
   useEffect(() => {
     if (!isSignedIn) return;
-    fetchSessions();
+    fetchAchievements();
     return () => abortRef.current?.abort();
-  }, [fetchSessions, isSignedIn]);
+  }, [fetchAchievements, isSignedIn]);
 
   return { achievements, isLoading, error, };
 }

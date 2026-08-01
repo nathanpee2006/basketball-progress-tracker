@@ -10,8 +10,6 @@ using backend.Features.Analytics.Consistency;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -57,6 +55,7 @@ builder.Services.AddScoped<IConsistencyService, ConsistencyService>();
 
 var app = builder.Build();
 
+// Any transient DB unavailability during startup becomes a hard crash with no retry, rather than a controlled failure
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

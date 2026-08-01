@@ -47,7 +47,7 @@ const AchievementBadge = React.forwardRef<
   ) => {
     const isUnlocked = achievement.achievedAt !== null
 
-    const hasProgress = isUnlocked && typeof achievement.progress === "number"
+    const hasProgress = typeof achievement.progress === "number"
     const progress = hasProgress
       ? Math.min(100, Math.max(0, achievement.progress ?? 0))
       : 0
