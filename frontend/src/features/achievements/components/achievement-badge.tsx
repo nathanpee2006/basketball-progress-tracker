@@ -135,8 +135,8 @@ const AchievementBadge = React.forwardRef<
                 badgeSizeMap[badgeSize],
                 "relative z-10 flex items-center justify-center rounded-full",
                 isUnlocked
-                  ? "bg-muted text-muted-foreground"
-                  : "bg-primary text-primary-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground"
               )}
             >
               <Trophy className={iconSizeMap[badgeSize]} />

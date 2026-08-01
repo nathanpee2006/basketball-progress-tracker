@@ -132,8 +132,8 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                       badgeSizeMap[badgeSize],
                       "flex shrink-0 items-center justify-center rounded-xl",
                       isUnlocked
-                        ? "bg-muted text-muted-foreground"
-                        : "bg-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
                     )}
                   >
                     <Trophy className={iconSizeMap[badgeSize]} />
