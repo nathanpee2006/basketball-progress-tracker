@@ -32,7 +32,7 @@ public static class GetLeaderboard
     }
 
     public static async Task<IResult> Handler(string? zone, AppDbContext context,
-        ClaimsPrincipal user)
+        ClaimsPrincipal user, CancellationToken cancellationToken)
     {
         var clerkUserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         if (clerkUserId is null)
@@ -52,6 +52,7 @@ public static class GetLeaderboard
                 case "paint":
 
                     var paintWeeklyTotals = await context.Sessions
+                        .AsNoTracking()
                         .Where(s => s.Date >= startWeek && s.Date < endWeek)
                         .GroupBy(s => s.PlayerId)
                         .Select(g => new
@@ -62,7 +63,7 @@ public static class GetLeaderboard
                             TotalPaintMakes = g.Sum(s => s.PaintMakes),
                             TotalPaintAttempts = g.Sum(s => s.PaintAttempts),
                         })
-                        .ToListAsync();
+                        .ToListAsync(cancellationToken);
 
                     var paintWeeklyShotPercentage = paintWeeklyTotals
                         .Select(r => new
@@ -93,6 +94,7 @@ public static class GetLeaderboard
                 case "midrange":
 
                     var midrangeWeeklyTotals = await context.Sessions
+                        .AsNoTracking() 
                         .Where(s => s.Date >= startWeek && s.Date < endWeek)
                         .GroupBy(s => s.PlayerId)
                         .Select(g => new
@@ -103,7 +105,7 @@ public static class GetLeaderboard
                             TotalMidrangeMakes = g.Sum(s => s.MidrangeMakes),
                             TotalMidrangeAttempts = g.Sum(s => s.MidrangeAttempts),
                         })
-                        .ToListAsync();
+                        .ToListAsync(cancellationToken);
 
                     var midrangeWeeklyShotPercentage = midrangeWeeklyTotals
                         .Select(r => new
@@ -133,6 +135,7 @@ public static class GetLeaderboard
                 case "threepoint":
 
                     var threePointWeeklyTotals = await context.Sessions
+                        .AsNoTracking()
                         .Where(s => s.Date >= startWeek && s.Date < endWeek)
                         .GroupBy(s => s.PlayerId)
                         .Select(g => new
@@ -143,7 +146,7 @@ public static class GetLeaderboard
                             TotalThreePointMakes = g.Sum(s => s.ThreePointMakes),
                             TotalThreePointAttempts = g.Sum(s => s.ThreePointAttempts),
                         })
-                        .ToListAsync();
+                        .ToListAsync(cancellationToken);
 
                     var threePointWeeklyShotPercentage = threePointWeeklyTotals
                         .Select(r => new
@@ -174,6 +177,7 @@ public static class GetLeaderboard
                 case "freethrow":
 
                     var freeThrowWeeklyTotals = await context.Sessions
+                        .AsNoTracking()
                         .Where(s => s.Date >= startWeek && s.Date < endWeek)
                         .GroupBy(s => s.PlayerId)
                         .Select(g => new
@@ -184,7 +188,7 @@ public static class GetLeaderboard
                             TotalFreeThrowMakes = g.Sum(s => s.FreeThrowMakes),
                             TotalFreeThrowAttempts = g.Sum(s => s.FreeThrowAttempts),
                         })
-                        .ToListAsync();
+                        .ToListAsync(cancellationToken);
 
                     var freeThrowWeeklyShotPercentage = freeThrowWeeklyTotals
                         .Select(r => new
@@ -219,6 +223,7 @@ public static class GetLeaderboard
 
         // Default leaderboard logic (weekly overall shot percentage of all players)
         var weeklyTotals = await context.Sessions
+            .AsNoTracking()
             .Where(s => s.Date >= startWeek && s.Date < endWeek)
             .GroupBy(s => s.PlayerId)
             .Select(g => new
@@ -235,7 +240,7 @@ public static class GetLeaderboard
                 TotalFreeThrowMakes = g.Sum(s => s.FreeThrowMakes),
                 TotalFreeThrowAttempts = g.Sum(s => s.FreeThrowAttempts),
             })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var weeklyOverallShotPercentage = weeklyTotals
             .Select(r => new
