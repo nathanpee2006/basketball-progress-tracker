@@ -3,8 +3,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function SessionDetailSkeleton() {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4" >
+      <div className="flex items-center justify-between" aria-label="session-detail-skeleton">
         <Skeleton className="h-6 w-48" />
         <Skeleton className="h-9 w-20" />
       </div>

@@ -7,7 +7,7 @@ type SessionsSkeletonListProps = {
 
 export function SessionsSkeletonList({ count = 5 }: SessionsSkeletonListProps) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" aria-label="sessions-skeleton-list">
       {Array.from({ length: count }).map((_, i) => (
         <Card key={i} className="w-full">
           <CardHeader>
