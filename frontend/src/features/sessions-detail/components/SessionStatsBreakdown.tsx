@@ -13,7 +13,7 @@ function StatRow({ label, makes, attempts, percentage }: StatRowProps) {
   return (
     <div className="flex items-center justify-between py-2 text-sm">
       <span className="text-muted-foreground">{label}</span>
-      <span>
+      <span data-testid={`stat-row-${label.toLowerCase().replace(/\s+/g, "-")}`}>
         {makes}/{attempts} · {percentage}%
       </span>
     </div>
