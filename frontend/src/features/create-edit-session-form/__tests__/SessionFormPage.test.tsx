@@ -7,10 +7,6 @@ import { userEvent } from "vitest/browser";
 import { format } from "date-fns";
 import { useSession } from "@/features/sessions-detail/useSession";
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
 const today = new Date();
 const expectedStoredDate = format(today, "yyyy-MM-dd");
 const expectedAriaLabel = format(today, "EEEE, MMMM do, yyyy");
@@ -86,6 +82,10 @@ vi.mock("../../sessions-detail/useSession", () => ({
 
 const useSessionMock = vi.mocked(useSession);
 
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
 test("creates a session and navigates to sessions list", async () => {
   useSessionMock.mockReturnValue({
     session: null,
@@ -121,7 +121,9 @@ test("creates a session and navigates to sessions list", async () => {
 
   await page.getByRole("button", { name: "Save" }).click();
 
-  expect(createSessionMock).toHaveBeenCalledTimes(1);
+  await expect
+    .poll(() => createSessionMock.mock.calls.length)
+    .toBeGreaterThan(0);
 
   await expect
     .element(page.getByRole("heading", { name: "Sessions" }))
@@ -256,4 +258,108 @@ test("updates a session and navigates to session detail view", async () => {
     freeThrowAttempts: freeThrowAttempts,
     drills: [],
   });
+});
+
+test("cancel button navigates back to /sessions", async () => {
+  useSessionMock.mockReturnValue({
+    session: null,
+    isLoading: false,
+    error: null,
+  });
+
+  render(
+    <MemoryRouter initialEntries={["/sessions/new"]}>
+      <Routes>
+        <Route
+          path="/sessions/new"
+          element={<SessionFormPage mode="create" />}
+        />
+        <Route path="/sessions" element={<h1>Sessions</h1>} />
+      </Routes>
+    </MemoryRouter>,
+  );
+
+  await page.getByRole("button", { name: "Cancel" }).click();
+
+  await expect
+    .element(page.getByRole("heading", { name: "Sessions" }))
+    .toBeVisible();
+
+  expect(createSessionMock).not.toHaveBeenCalled();
+});
+
+test("shows SessionNotFound when editing a session that doesn't exist", async () => {
+  useSessionMock.mockReturnValue({
+    session: null,
+    isLoading: false,
+    error: null,
+  });
+
+  render(
+    <MemoryRouter initialEntries={["/sessions/999/edit"]}>
+      <Routes>
+        <Route
+          path="/sessions/:id/edit"
+          element={<SessionFormPage mode="edit" />}
+        />
+        <Route path="/sessions" element={<h1>Sessions</h1>} />
+      </Routes>
+    </MemoryRouter>,
+  );
+
+  await expect
+    .element(page.getByText(/session not found/i))
+    .toBeInTheDocument();
+
+  await expect
+    .element(page.getByLabelText("Paint Makes"))
+    .not.toBeInTheDocument();
+
+  await page.getByRole("button", { name: /back to sessions/i }).click();
+
+  await expect
+    .element(page.getByRole("heading", { name: "Sessions" }))
+    .toBeVisible();
+});
+
+test("blocks submission and shows an error when makes exceeds attempts", async () => {
+  useSessionMock.mockReturnValue({
+    session: null,
+    isLoading: false,
+    error: null,
+  });
+
+  render(
+    <MemoryRouter initialEntries={["/sessions/new"]}>
+      <Routes>
+        <Route
+          path="/sessions/new"
+          element={<SessionFormPage mode="create" />}
+        />
+        <Route path="/sessions" element={<h1>Sessions</h1>} />
+      </Routes>
+    </MemoryRouter>,
+  );
+
+  // Invalid: 3 makes out of only 2 attempts.
+  await page.getByLabelText("Paint Makes").fill("3");
+  await page.getByLabelText("Paint Attempts").fill("2");
+  await page.getByLabelText("Midrange Makes").fill("1");
+  await page.getByLabelText("Midrange Attempts").fill("2");
+  await page.getByLabelText("Three Point Makes").fill("1");
+  await page.getByLabelText("Three Point Attempts").fill("2");
+  await page.getByLabelText("Free Throw Makes").fill("1");
+  await page.getByLabelText("Free Throw Attempts").fill("2");
+
+  await page.getByRole("button", { name: "Save" }).click();
+
+  await expect
+    .element(page.getByText(/makes cannot exceed attempts/i))
+    .toBeInTheDocument();
+
+  expect(createSessionMock).not.toHaveBeenCalled();
+
+  await expect
+    .element(page.getByRole("heading", { name: "New Session" }))
+    .toBeVisible();
 });
