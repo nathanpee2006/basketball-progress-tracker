@@ -9,7 +9,7 @@ export function SessionDetailHeader({ date, onEdit }: SessionDetailHeaderProps) 
   return (
     <div className="flex items-center justify-between">
       <div>
-        <h2 className="text-xl font-semibold" data-testid="session-detail-header-date" aria-label="Session Detail Header Date">
+        <h2 className="text-xl font-semibold" data-testid="session-detail-header-date">
           {new Date(date).toLocaleDateString(undefined, {
             weekday: "long",
             year: "numeric",
