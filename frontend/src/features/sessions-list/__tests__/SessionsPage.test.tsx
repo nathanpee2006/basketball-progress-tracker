@@ -183,6 +183,7 @@ test("deletes a session and shows a success toast", async () => {
   await page.getByRole("button", { name: "Session actions" }).click();
   await page.getByRole("menuitem", { name: /delete/i }).click();
 
+  await expect.poll(() => deleteSessionMock.mock.calls.length).toBeGreaterThan(0);
   expect(deleteSessionMock).toHaveBeenCalledWith(mockSession.id);
   expect(toastSuccessMock).toHaveBeenCalledWith("Session deleted successfully");
 });

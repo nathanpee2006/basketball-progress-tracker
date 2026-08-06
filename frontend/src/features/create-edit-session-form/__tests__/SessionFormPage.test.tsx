@@ -231,8 +231,6 @@ test("updates a session and navigates to session detail view", async () => {
 
   await page.getByRole("button", { name: "Save" }).click();
 
-  expect(updateSessionMock).toHaveBeenCalledTimes(1);
-
   await expect
     .element(
       page.getByRole("heading", {
@@ -245,6 +243,8 @@ test("updates a session and navigates to session detail view", async () => {
       }),
     )
     .toBeVisible();
+
+  expect(updateSessionMock).toHaveBeenCalledTimes(1);
 
   expect(updateSessionMock).toHaveBeenCalledWith(1, {
     date: expectedStoredDate,
