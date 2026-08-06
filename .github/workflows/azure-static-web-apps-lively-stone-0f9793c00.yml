@@ -11,7 +11,25 @@ on:
   workflow_dispatch:
 
 jobs:
+  test:
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Test Job
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+          cache: 'npm'
+          cache-dependency-path: ./frontend/package-lock.json
+      - run: npm ci
+      - run: npm test 
+
   build_and_deploy_job:
+    needs: test
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
