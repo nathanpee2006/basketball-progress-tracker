@@ -13,9 +13,9 @@
 
 ## Introduction
 
-As someone who finds it hard to be consistent and frustating to know whether I am improving in my basketball skills or not, I built this app for myself.
+As someone who finds it hard to be consistent and frustrating to know whether I am improving in my basketball skills or not, I built this app for myself.
 
-A web application that tracks individual progress in basketball in a gamified way. You can log sessions which allows you to track how many shots you made and missed. As long as you remain consistent you can measure your progress (i.e. shooting percentages in specific zones such as free throw, paint, midrange, and three pointers) over time against other players. This is for people wanting to know if they are improving over time through data.
+A web application that tracks individual progress in basketball in a gamified way. You can log sessions which allows you to track how many shots you made and missed. As long as you remain consistent you can measure your progress (i.e. shooting percentages in specific zones such as free throw, paint, midrange, and three-pointers) over time against other players. This is for people wanting to know if they are improving over time through data.
 
 ## Theme Connection
 
