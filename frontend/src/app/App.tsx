@@ -1,4 +1,4 @@
-import { SignInButton, SignUpButton, useAuth } from "@clerk/react";
+import { useAuth } from "@clerk/react";
 import { Navigate, Route, Routes } from "react-router";
 import { AppLayout } from "@/layouts/AppLayout";
 import { AnalyticsPage } from "@/features/analytics/AnalyticsPage";
@@ -8,27 +8,7 @@ import { SessionFormPage } from "@/features/create-edit-session-form/SessionForm
 import { SessionsPage } from "@/features/sessions-list/SessionsPage";
 import { LeaderboardPage } from "@/features/leaderboard/LeaderboardPage";
 import { AchievementsPage } from "@/features/achievements/AchievementsPage";
-
-function UnauthenticatedScreen() {
-  const unsafeMetadata : SignUpUnsafeMetadata = {
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  }
-
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6">
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
-        <h1 className="text-2xl font-semibold">Basketball Progress Tracker</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Sign in to log sessions, track streaks, and view analytics.
-        </p>
-        <div className="mt-6 flex items-center justify-center gap-3">
-          <SignInButton />
-          <SignUpButton mode="modal" unsafeMetadata={unsafeMetadata} />
-        </div>
-      </div>
-    </main>
-  );
-}
+import { LandingPage } from "@/features/landing/LandingPage";
 
 function App() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -38,7 +18,7 @@ function App() {
   }
 
   if (!isSignedIn) {
-    return <UnauthenticatedScreen />;
+    return <LandingPage />;
   }
 
   return (
