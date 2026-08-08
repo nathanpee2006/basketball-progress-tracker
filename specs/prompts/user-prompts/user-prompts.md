@@ -34,6 +34,14 @@ Justify why a useCallback function is necessary for deleting a session. From my 
 https://clerk.com/docs/guides/development/webhooks/syncing
 Within my application, I want to have a leaderboard that requires the name of the user. My approach is to retrieve the username and email from the webhook request's data and store it in the database. I was wondering if there are any different approaches and their tradeoffs? Also give your recommendation.
 
+Create a function to get the next week Monday's date based on current date.
+
 I am considering whether I should include the rank in the API response or do I set the ranks of each entry in the frontend. What are tradeoffs of these two approaches? Also let me know the implications of both.
 
-@backend/Features/Leaderboard/GetLeaderBoard.cs @frontend/src/features/leaderboard/LeaderboardPage.tsx Create a hook similar to @frontend/src/features/analytics/useShootingAnalytics.tsx that will return @frontend/src/features/leaderboard/types/leaderboard-entry.ts data. It also have the loading and error states. 
+`@backend/Features/Leaderboard/GetLeaderboard.cs` `@frontend/src/features/leaderboard/LeaderboardPage.tsx` Create a hook similar to `@frontend/src/features/analytics/useShootingAnalytics.tsx` that will return `@frontend/src/features/leaderboard/types/leaderboard-entry.ts` data. It also have the loading and error states. 
+
+How should I structure my api endpoint to support the achievements feature? For context, I am using ASP.NET core. Here is a sample how my api endpoints are typically made. 
+(Large code snippet not included)
+Would I store achievements of the user in the database or do I derive them in the backend based on existing data and send it to the frontend? Give the tradeoffs of either aproaches and give your recommendation.
+
+if the newly created session meets some threshold of a specific achievement, should I update PlayerAchievement within CreateSession? Why this approach over another one say like after session creation, I immediately make an API request to /api/achievements endpoint? Give tradeoffs of approaches and your recommendation.
