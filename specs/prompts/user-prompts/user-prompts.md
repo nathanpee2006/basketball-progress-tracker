@@ -38,7 +38,7 @@ Create a function to get the next week Monday's date based on current date.
 
 I am considering whether I should include the rank in the API response or do I set the ranks of each entry in the frontend. What are tradeoffs of these two approaches? Also let me know the implications of both.
 
-@backend/Features/Leaderboard/GetLeaderBoard.cs @frontend/src/features/leaderboard/LeaderboardPage.tsx Create a hook similar to @frontend/src/features/analytics/useShootingAnalytics.tsx that will return @frontend/src/features/leaderboard/types/leaderboard-entry.ts data. It also have the loading and error states. 
+`@backend/Features/Leaderboard/GetLeaderboard.cs` `@frontend/src/features/leaderboard/LeaderboardPage.tsx` Create a hook similar to `@frontend/src/features/analytics/useShootingAnalytics.tsx` that will return `@frontend/src/features/leaderboard/types/leaderboard-entry.ts` data. It also have the loading and error states. 
 
 How should I structure my api endpoint to support the achievements feature? For context, I am using ASP.NET core. Here is a sample how my api endpoints are typically made. 
 (Large code snippet not included)
